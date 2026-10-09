@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Mặc đúng nghề</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@600;800&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --sky-1:#1b86dc; --sky-2:#7fd5ff; --sun:#ffd23f; --red:#e3242b; --red-d:#a30f17;
+  --navy:#12305b; --ink:#12305b; --paper:#ffffff; --ok:#1fa75a; --bad:#e3242b;
+  --grass-1:#7ee07f; --grass-2:#3fb85a;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){ --sky-1:#0e5aa8; --sky-2:#3a9fdc; --grass-1:#5cc46f; --grass-2:#2f9a49; }
+}
+:root[data-theme="dark"]{ --sky-1:#0e5aa8; --sky-2:#3a9fdc; --grass-1:#5cc46f; --grass-2:#2f9a49; }
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:'Nunito','Be Vietnam Pro',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  background:var(--sky-1); color:var(--ink); overflow:hidden; -webkit-tap-highlight-color:transparent;
+}
+button{font-family:inherit;color:inherit}
+:focus-visible{outline:4px solid #fff;outline-offset:3px;box-shadow:0 0 0 7px var(--navy)}
+
+.app{position:relative;height:100%;overflow:hidden}
+.scene{position:absolute;inset:0;background:radial-gradient(120% 90% at 50% 75%,var(--sky-2) 0,var(--sky-1) 72%);overflow:hidden}
+.scene::before{
+  content:'';position:absolute;left:50%;top:70%;width:220vmax;height:220vmax;margin:-110vmax 0 0 -110vmax;
+  background:repeating-conic-gradient(rgba(255,255,255,.16) 0 7deg,transparent 7deg 14deg);
+  -webkit-mask-image:radial-gradient(closest-side,#000 8%,transparent 70%);mask-image:radial-gradient(closest-side,#000 8%,transparent 70%);
+  animation:spin 120s linear infinite;
+}
+.scene::after{
+  content:'';position:absolute;left:-12%;right:-12%;bottom:-20%;height:36%;
+  background:linear-gradient(var(--grass-1),var(--grass-2));border-top:6px solid #b6f5ad;
+  border-radius:50% 50% 0 0 / 100% 100% 0 0;
+}
+.cloud{position:absolute;background:#fff;border-radius:999px;opacity:.9;filter:drop-shadow(0 6px 0 rgba(18,48,91,.12))}
+.cloud::before,.cloud::after{content:'';position:absolute;background:#fff;border-radius:50%}
+.cloud.c1{width:120px;height:34px;left:6%;top:12%;animation:drift 38s ease-in-out infinite alternate}
+.cloud.c1::before{width:52px;height:52px;left:16px;top:-24px}.cloud.c1::after{width:40px;height:40px;left:62px;top:-16px}
+.cloud.c2{width:150px;height:40px;right:5%;top:20%;animation:drift 46s ease-in-out infinite alternate-reverse}
+.cloud.c2::before{width:64px;height:64px;left:22px;top:-30px}.cloud.c2::after{width:48px;height:48px;left:84px;top:-20px}
+
+.screen{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;overflow-x:hidden;overflow-y:auto;z-index:2}
+.screen.on{display:flex;animation:fadein .35s ease}
+
+/* sound toggle */
+.snd{position:absolute;top:12px;right:12px;z-index:50;width:52px;height:52px;border-radius:50%;border:4px solid var(--navy);background:#fff;font-size:24px;cursor:pointer;display:grid;place-items:center;box-shadow:0 4px 0 var(--navy)}
+.snd:active{transform:translateY(3px);box-shadow:0 1px 0 var(--navy)}
+.audio-hint{position:absolute;top:18px;left:50%;transform:translateX(-50%);z-index:49;background:#fff;border:3px solid var(--navy);border-radius:999px;padding:6px 16px;font-weight:800;font-size:14px;white-space:nowrap;animation:blink 1.6s ease-in-out infinite}
+.audio-hint[hidden]{display:none}
+
+/* ---------- title ---------- */
+#s-title{justify-content:space-between;padding:clamp(14px,3vh,34px) 12px clamp(14px,3vh,30px)}
+.logo{text-align:center;margin-top:clamp(26px,5vh,48px)}
+.logo h1{
+  font:800 clamp(42px,10vw,96px)/.95 'Baloo 2','Nunito',sans-serif;color:var(--sun);
+  -webkit-text-stroke:clamp(7px,1.1vw,12px) var(--navy);paint-order:stroke fill;
+  text-shadow:0 .07em 0 var(--navy),0 .14em 0 rgba(0,0,0,.18);letter-spacing:.01em;transform:rotate(-2deg);
+}
+.logo p{margin-top:.9em;display:inline-block;background:var(--navy);color:#fff;font-weight:800;font-size:clamp(14px,2.2vw,20px);padding:.35em 1.1em;border-radius:999px}
+.vstage{position:relative;width:min(900px,96%);height:min(46vh,430px);margin:0 auto;flex:0 0 auto}
+.vchar{position:absolute;transform:translateX(-50%)}
+.bob{height:100%;display:flex;flex-direction:column;align-items:center;animation:bob 1.8s ease-in-out infinite}
+.tag{flex:0 0 auto;background:#fff;color:var(--navy);border:3px solid var(--navy);border-radius:999px;padding:0 .7em;margin-bottom:3px;font:800 clamp(11px,1.7vw,18px)/1.5 'Baloo 2','Nunito',sans-serif;white-space:nowrap;box-shadow:0 3px 0 var(--navy)}
+.figure{flex:1 1 0;min-height:0;aspect-ratio:200/380;transform-origin:50% 100%}
+.figure svg{width:100%;height:100%;display:block;overflow:visible}
+.figure.swap{animation:swap .5s ease}
+.title-bottom{display:flex;flex-direction:column;align-items:center;gap:14px;padding-bottom:6px}
+.btn-start{
+  font:800 clamp(34px,7vw,56px)/1 'Baloo 2','Nunito',sans-serif;letter-spacing:.06em;color:#fff;cursor:pointer;
+  background:linear-gradient(#ff6a5c,#e0212b 55%,#b9101c);border:6px solid #fff;border-radius:999px;padding:.14em 1.7em .2em;
+  text-shadow:0 3px 0 #8d0b14,0 0 8px rgba(0,0,0,.25);
+  box-shadow:0 0 0 4px var(--red-d),0 10px 0 4px #7d0911,0 22px 28px rgba(0,0,0,.35);
+  animation:pulse 1.5s ease-in-out infinite;margin-bottom:10px;
+}
+.btn-start:active{animation:none;transform:translateY(8px);box-shadow:0 0 0 4px var(--red-d),0 2px 0 4px #7d0911,0 6px 10px rgba(0,0,0,.35)}
+.credit{font-weight:800;color:#fff;text-shadow:0 2px 0 var(--navy);font-size:14px;text-align:center}
+
+/* ---------- loading ---------- */
+#s-loading{justify-content:center;gap:clamp(14px,3vh,28px);padding:20px}
+.load-fig{height:min(34vh,300px);aspect-ratio:200/380}
+.load-fig svg{width:100%;height:100%;display:block;overflow:visible;animation:walk .7s ease-in-out infinite}
+.load-box{width:min(560px,92%);text-align:center}
+.load-box h2{font:800 clamp(24px,4vw,34px) 'Baloo 2','Nunito',sans-serif;color:#fff;-webkit-text-stroke:6px var(--navy);paint-order:stroke fill;margin-bottom:8px}
+.bar{position:relative;height:40px;border:5px solid #fff;border-radius:999px;background:rgba(18,48,91,.75);box-shadow:0 0 0 4px var(--navy),0 8px 0 4px rgba(18,48,91,.5);overflow:hidden}
+.bar-fill{height:100%;width:0;background:repeating-linear-gradient(-45deg,#ffd23f 0 14px,#ffb300 14px 28px);border-radius:999px;transition:width .12s linear}
+.bar-pct{position:absolute;inset:0;display:grid;place-items:center;font:800 22px 'Baloo 2','Nunito',sans-serif;color:#fff;text-shadow:0 2px 0 var(--navy),0 0 6px var(--navy)}
+.tip{margin-top:16px;color:#fff;font-weight:800;text-shadow:0 2px 0 var(--navy);min-height:2.6em;font-size:clamp(14px,2vw,17px)}
+
+/* ---------- round ---------- */
+#s-round{justify-content:flex-start}
+.hud{width:min(1100px,100%);display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 76px 8px 16px}
+.chip{background:#fff;border:4px solid var(--navy);border-radius:999px;padding:.05em .9em;font:800 clamp(15px,2.4vw,20px)/1.6 'Baloo 2','Nunito',sans-serif;box-shadow:0 4px 0 var(--navy);white-space:nowrap}
+.dots{display:flex;gap:8px}
+.dots i{width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,.45);border:3px solid var(--navy)}
+.dots i.d-done{background:var(--ok)}
+.dots i.d-now{background:var(--sun);transform:scale(1.25)}
+.jobbar{margin:4px 16px 6px;text-align:center}
+.jobbar small{display:block;font-weight:800;color:#fff;text-shadow:0 2px 0 var(--navy);font-size:15px}
+.jobbar b{display:inline-block;margin-top:2px;font:800 clamp(28px,5.4vw,50px)/1.15 'Baloo 2','Nunito',sans-serif;background:var(--sun);border:5px solid var(--navy);border-radius:20px;padding:.02em .7em .08em;box-shadow:0 6px 0 var(--navy);transform:rotate(-1deg)}
+.play{width:min(1100px,100%);display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:12px 22px;padding:6px 18px 22px;align-items:start}
+.stage{position:relative;height:min(46vh,430px);display:flex;justify-content:center}
+.stage-fig{height:100%;aspect-ratio:200/380;transform-origin:50% 100%}
+.stage-fig svg{width:100%;height:100%;display:block;overflow:visible}
+.stage-fig.idle{animation:bob 2.4s ease-in-out infinite}
+.stage-fig.happy{animation:hop .6s ease 3}
+.stage-fig.cry{animation:shake .45s ease 4}
+.stage-fig.pop{animation:swap .55s ease}
+.msg{margin-top:10px;border:5px solid var(--navy);border-radius:20px;background:#fff;padding:10px 14px;text-align:center;min-height:92px;display:flex;flex-direction:column;justify-content:center;box-shadow:0 6px 0 var(--navy)}
+.msg strong{font:800 clamp(22px,4vw,32px)/1.15 'Baloo 2','Nunito',sans-serif}
+.msg span{font-weight:700;font-size:clamp(14px,1.9vw,16px);margin-top:2px}
+.msg.ok{background:var(--ok);color:#fff}
+.msg.bad{background:var(--bad);color:#fff}
+.msg.ok strong,.msg.bad strong{text-shadow:0 2px 0 rgba(0,0,0,.25)}
+.msg.pop{animation:msgpop .35s ease}
+.ask{font:800 clamp(18px,2.6vw,24px) 'Baloo 2','Nunito',sans-serif;color:#fff;text-shadow:0 2px 0 var(--navy);text-align:center;margin-bottom:10px}
+.opts{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
+.card{
+  appearance:none;flex:0 0 calc(33.333% - 8px);max-width:168px;cursor:pointer;
+  border:4px solid var(--navy);border-radius:20px;padding:8px 6px 4px;
+  background:linear-gradient(#fff,#dff0ff);box-shadow:0 6px 0 var(--navy);transition:transform .12s,box-shadow .12s;
+}
+.card svg{width:100%;height:auto;display:block;aspect-ratio:200/380}
+.card:hover:not(:disabled){transform:translateY(-4px);box-shadow:0 10px 0 var(--navy)}
+.card:active:not(:disabled){transform:translateY(3px);box-shadow:0 2px 0 var(--navy)}
+.card.wrong{filter:grayscale(1);opacity:.45;cursor:not-allowed;animation:shake .4s ease}
+.card.right{border-color:var(--ok);box-shadow:0 0 0 6px rgba(31,167,90,.5),0 6px 0 var(--ok);background:linear-gradient(#fff,#d8f7e3)}
+.card:disabled:not(.wrong):not(.right){cursor:default;opacity:.8}
+.btn-next{
+  display:block;margin:16px auto 0;font:800 clamp(20px,3vw,26px) 'Baloo 2','Nunito',sans-serif;color:#fff;cursor:pointer;
+  background:linear-gradient(#ff6a5c,#e0212b 55%,#b9101c);border:5px solid #fff;border-radius:999px;padding:.1em 1.4em .16em;
+  text-shadow:0 2px 0 #8d0b14;box-shadow:0 0 0 3px var(--red-d),0 7px 0 3px #7d0911,0 14px 20px rgba(0,0,0,.3);
+}
+.btn-next[hidden]{display:none}
+.btn-next:active{transform:translateY(6px);box-shadow:0 0 0 3px var(--red-d),0 1px 0 3px #7d0911}
+.btn-next.ghost{background:#fff;color:var(--navy);text-shadow:none;border-color:var(--navy);box-shadow:0 6px 0 var(--navy)}
+.sparks{position:absolute;inset:0;pointer-events:none}
+.spark{position:absolute;left:50%;top:42%;width:20px;height:20px;background:var(--sun);filter:drop-shadow(0 0 0 var(--navy));
+  clip-path:polygon(50% 0,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);animation:spark .95s ease-out forwards}
+
+/* ---------- end ---------- */
+
+/* ---------- animation ---------- */
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes drift{from{transform:translateX(-30px)}to{transform:translateX(60px)}}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.55}}
+@keyframes swap{0%{transform:scale(1)}35%{transform:scale(1.18,.82)}65%{transform:scale(.9,1.12)}100%{transform:scale(1)}}
+@keyframes hop{0%,100%{transform:translateY(0) scale(1)}40%{transform:translateY(-34px) scale(.96,1.05)}70%{transform:translateY(0) scale(1.05,.95)}}
+@keyframes shake{0%,100%{transform:translateX(0) rotate(0)}25%{transform:translateX(-8px) rotate(-3deg)}75%{transform:translateX(8px) rotate(3deg)}}
+@keyframes walk{0%,100%{transform:rotate(-2deg) translateY(0)}50%{transform:rotate(2deg) translateY(-10px)}}
+@keyframes msgpop{0%{transform:scale(.92)}60%{transform:scale(1.04)}100%{transform:scale(1)}}
+@keyframes spark{from{transform:translate(-50%,-50%) scale(.4) rotate(0);opacity:1}to{transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(1.5) rotate(160deg);opacity:0}}
+@keyframes tear{0%{transform:translateY(-6px);opacity:0}30%{opacity:1}100%{transform:translateY(28px);opacity:0}}
+.tear{animation:tear .9s ease-in infinite}.tear.t2{animation-delay:.35s}
+
+@media (max-width:820px){
+  .play{grid-template-columns:1fr;padding-bottom:28px}
+  .stage{height:min(34vh,300px)}
+  .hud{padding-right:70px}
+  .vstage{height:min(40vh,340px)}
+}
+@media (max-width:420px){
+  .card{padding:6px 4px 2px;border-width:3px}
+  .chip{font-size:14px}
+}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important}
+}
+/* ===== MỚI: hệ thống, rương, vòng quay, thiên thạch ===== */
+.snd{z-index:130}
+.hud{flex-wrap:wrap;row-gap:6px}
+.dots{gap:6px}.dots i{width:14px;height:14px}
+@media (max-width:520px){.dots{gap:4px}.dots i{width:10px;height:10px;border-width:2px}}
+.sysov,.syswin,.minisys,.sys-btn{font-family:'Oswald','Be Vietnam Pro','Nunito',system-ui,sans-serif}
+.sysov{position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(3,10,30,.62);backdrop-filter:blur(2px)}
+.sysov.on{display:flex}
+.sysov.warnbg{animation:warnpulse 1s ease-in-out infinite}
+.sysov.sad{background:rgba(6,7,12,.72)}
+.syswin{position:relative;width:min(580px,100%);padding:52px 30px 46px;color:#fff;border:3px solid #6fc3ff;border-radius:6px;
+  background:linear-gradient(180deg,rgba(14,44,110,.97),rgba(6,20,62,.97));
+  box-shadow:0 0 0 2px #0a2a66 inset,0 0 30px rgba(80,170,255,.75),inset 0 0 46px rgba(40,120,255,.35)}
+.syswin.warn{border-color:#ff4b4b;box-shadow:0 0 0 2px #5a0a0a inset,0 0 34px rgba(255,60,60,.85),inset 0 0 46px rgba(255,40,40,.3)}
+.syswin.sad{border-color:#8f9bb0;background:linear-gradient(180deg,#2b3140,#151a24);box-shadow:0 0 22px rgba(120,130,150,.45),inset 0 0 40px rgba(0,0,0,.45)}
+.syswin.flick{animation:sysflick .2s linear}
+.syswin .cn{position:absolute;width:24px;height:24px;border:4px solid #9fe0ff;pointer-events:none;filter:drop-shadow(0 0 6px #4ab4ff);z-index:3}
+.syswin .cn.tl{left:-8px;top:-8px;border-right:0;border-bottom:0}.syswin .cn.tr{right:-8px;top:-8px;border-left:0;border-bottom:0}
+.syswin .cn.bl{left:-8px;bottom:-8px;border-right:0;border-top:0}.syswin .cn.br{right:-8px;bottom:-8px;border-left:0;border-top:0}
+.syswin.warn .cn{border-color:#ff8a8a;filter:drop-shadow(0 0 6px #ff3b3b)}
+.syswin.sad .cn{border-color:#aab4c6;filter:none}
+.crest{position:absolute;top:-18px;left:50%;transform:translateX(-50%);z-index:4}
+.sys-head{display:flex;align-items:center;justify-content:center;gap:12px}
+.sys-ic{width:32px;height:32px;border:3px solid #fff;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:20px;line-height:1}
+.sys-title{font-weight:700;font-size:clamp(26px,5vw,34px);letter-spacing:.08em;text-transform:uppercase;text-shadow:0 0 12px #4ab4ff}
+.syswin.warn .sys-title{text-shadow:0 0 12px #ff3b3b}.syswin.sad .sys-title{text-shadow:none;color:#cfd6e4}
+.sys-line{height:2px;margin:8px 0 18px;background:linear-gradient(90deg,transparent,#7fd0ff,transparent)}
+.sys-text{min-height:3.2em;font-weight:500;font-size:clamp(17px,3.7vw,22px);line-height:1.55;text-align:center;letter-spacing:.02em}
+.sys-text .t-off{visibility:hidden}
+.sys-btn{display:block;margin:20px 0 0 auto;font-weight:700;font-size:18px;letter-spacing:.12em;text-transform:uppercase;color:#fff;cursor:pointer;
+  background:rgba(40,120,220,.35);border:2px solid #9fe0ff;padding:6px 18px;box-shadow:0 0 14px rgba(80,170,255,.6);animation:blink 1.4s ease-in-out infinite}
+.sys-btn:hover{background:rgba(70,150,250,.55)}
+.syswin.sad .sys-btn{border-color:#aab4c6;background:rgba(160,170,190,.2);box-shadow:none}
+.wband{position:absolute;left:0;right:0;height:22px;overflow:hidden;display:none;align-items:center;background:#c4141c;color:#fff;font-weight:700;font-size:13px;letter-spacing:.2em;z-index:2}
+.wband.top{top:0;border-bottom:2px solid #ffd23f}.wband.bot{bottom:0;border-top:2px solid #ffd23f}
+.syswin.warn .wband{display:flex}
+.wband span{display:inline-block;white-space:nowrap;animation:mq 7s linear infinite}
+.wband.bot span{animation-direction:reverse}
+/* hệ thống thu nhỏ + rương (chỉ ở sảnh chính) */
+.minisys,.chest{display:none}
+body[data-screen="title"] .minisys,body[data-screen="title"] .chest{display:block}
+.minisys{position:absolute;top:74px;right:6px;z-index:50;width:64px;padding:5px 4px 4px;text-align:center;cursor:pointer;color:#fff;
+  background:linear-gradient(180deg,#123a8c,#071a52);border:2px solid #6fc3ff;border-radius:4px;box-shadow:0 0 14px rgba(80,170,255,.85);animation:blink 1.6s ease-in-out infinite}
+.minisys .ms-ic{display:inline-grid;place-items:center;width:20px;height:20px;border:2px solid #fff;border-radius:50%;font-weight:700;font-size:13px;line-height:1}
+.minisys .ms-t{display:block;font-weight:700;font-size:10px;letter-spacing:.1em;margin-top:2px}
+.minisys:hover{transform:scale(1.06)}
+.chest{position:absolute;right:12px;bottom:12px;z-index:6;width:clamp(68px,10vw,108px);background:none;border:0;cursor:pointer;padding:0}
+.tw{transform-box:fill-box;transform-origin:center;animation:twinkle 1.6s ease-in-out infinite}.tw2{animation-delay:.8s}
+/* vòng quay */
+#s-wheel{justify-content:flex-start;padding-bottom:24px}
+.wh-top{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;padding:14px 70px 4px 16px;text-align:center}
+.wh-top h2{font:800 clamp(26px,5vw,44px)/1.05 'Baloo 2','Nunito',sans-serif;color:var(--sun);-webkit-text-stroke:8px var(--navy);paint-order:stroke fill;text-shadow:0 .06em 0 var(--navy)}
+.wh-main{width:min(1040px,96%);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px 24px;align-items:center;padding:6px 0}
+.wheel-wrap{position:relative;width:min(470px,92vw,56vh);aspect-ratio:1;margin:0 auto}
+#wheel-rot,.wheel-fix{position:absolute;inset:0;width:100%;height:100%}
+#wheel-rot svg,.wheel-fix{display:block;width:100%;height:100%}
+.wheel-fix{pointer-events:none;filter:drop-shadow(0 8px 10px rgba(0,0,0,.25))}
+.wh-left .btn-next,.wh-right .btn-next{margin-top:14px}
+.wi{background:#fff;border:5px solid var(--navy);border-radius:20px;box-shadow:0 6px 0 var(--navy);padding:14px 16px;display:flex;gap:14px;align-items:center;min-height:230px}
+.wi.pop{animation:msgpop .4s ease}
+.wi-ph{width:100%;text-align:center;font:800 clamp(17px,2.6vw,22px)/1.4 'Baloo 2','Nunito',sans-serif;color:var(--navy)}
+.wi-fig{flex:0 0 clamp(80px,14vw,120px)}.wi-fig svg{width:100%;height:auto;display:block;overflow:visible}
+.wi-tx small{font-weight:800;color:#5b6b84;font-size:13px}
+.wi-tx h3{font:800 clamp(22px,3.6vw,32px)/1.1 'Baloo 2','Nunito',sans-serif;margin-bottom:6px}
+.wi-tx p{font-weight:700;line-height:1.5;font-size:clamp(14px,1.9vw,16px)}
+@media (max-width:820px){.wh-main{grid-template-columns:1fr}.wh-top{padding-right:70px}}
+/* hiệu ứng phát sáng + thiên thạch */
+.flash{position:fixed;inset:0;z-index:120;pointer-events:none;opacity:0;background:radial-gradient(circle,#fff 0,#fff 40%,#fff7c8 100%)}
+.flash.go{animation:flashgo 1.8s ease forwards}
+.fx{position:fixed;inset:0;z-index:90;pointer-events:none;overflow:hidden}
+.fx[hidden]{display:none}
+.meteor{position:absolute;left:50%;top:48%;width:130px;height:286px;transform-origin:50% 77%;animation:mtfall 1.15s cubic-bezier(.45,0,.9,.6) forwards}
+.meteor svg{width:100%;height:100%;display:block}
+.fx.hit .meteor{display:none}
+.bflash,.ring,.boom{display:none}
+.fx.hit .bflash{display:block;position:absolute;inset:0;background:#fff;animation:bflash .8s ease-out forwards}
+.fx.hit .ring{display:block;position:absolute;left:50%;top:48%;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;border:10px solid #ffd23f;box-shadow:0 0 40px #ff7a1a;animation:ringx 1s ease-out forwards}
+.fx.hit .boom{display:block;position:absolute;left:50%;top:44%;font:800 clamp(80px,22vw,220px)/1 'Baloo 2','Nunito',sans-serif;color:#ffd23f;-webkit-text-stroke:14px #b3260b;paint-order:stroke fill;text-shadow:0 12px 0 #7d0911;animation:boompop .6s cubic-bezier(.2,1.6,.4,1) forwards}
+.app.quake{animation:quake .08s linear 14}
+body.sad .app{filter:grayscale(.92) brightness(.6) contrast(1.05)}
+.app{transition:filter 1s}
+@keyframes sysflick{0%{opacity:1}20%{opacity:0}48%{opacity:0}50%{opacity:1;filter:brightness(2.4)}100%{opacity:1;filter:none}}
+@keyframes warnpulse{0%,100%{background:rgba(3,10,30,.62)}50%{background:rgba(120,0,0,.55)}}
+@keyframes mq{to{transform:translateX(-50%)}}
+@keyframes chglow{0%,100%{opacity:.55;transform:scale(.9)}50%{opacity:1;transform:scale(1.15)}}
+@keyframes chwig{0%,100%{transform:rotate(0) scale(1)}20%{transform:rotate(-6deg) scale(1.06)}40%{transform:rotate(6deg) scale(1.06)}60%{transform:rotate(-3deg)}}
+@keyframes twinkle{0%,100%{transform:scale(.3);opacity:.2}50%{transform:scale(1);opacity:1}}
+@keyframes flashgo{0%{opacity:0}30%{opacity:1}55%{opacity:1}100%{opacity:0}}
+@keyframes mtfall{from{transform:translate(calc(-50% + 46vh),calc(-77% - 105vh)) rotate(24deg) scale(.55)}to{transform:translate(-50%,-77%) rotate(24deg) scale(1.25)}}
+@keyframes bflash{0%{opacity:1}100%{opacity:0}}
+@keyframes ringx{from{transform:scale(1);opacity:1}to{transform:scale(20);opacity:0}}
+@keyframes boompop{from{transform:translate(-50%,-50%) rotate(-6deg) scale(0);opacity:0}to{transform:translate(-50%,-50%) rotate(-6deg) scale(1);opacity:1}}
+@keyframes quake{0%,100%{transform:translate(0,0)}25%{transform:translate(-9px,5px)}50%{transform:translate(8px,-6px)}75%{transform:translate(-6px,-4px)}}
+
+/* ===== v2: rương, vòng quay, bộ sưu tập thẻ ===== */
+.chest{width:clamp(88px,12vw,140px)}
+.chest svg{width:100%;display:block;overflow:visible;transform-origin:50% 100%;animation:chjump 5s ease-in-out infinite}
+.chest.opening svg{animation:none}
+.ch-glow,.ch-rays,.ch-lidO,.ch-in,.ch-sp{display:none}
+.chest.unlocked .ch-glow,.chest.unlocked .ch-rays,.chest.unlocked .ch-sp{display:inline}
+.ch-glow{transform-box:fill-box;transform-origin:center;animation:chglow 2s ease-in-out infinite}
+.ch-rays{transform-origin:70px 64px;animation:spin 10s linear infinite}
+.chest.open .ch-lidO,.chest.open .ch-in{display:inline}
+.chest.open .ch-lidC,.chest.unlocked .ch-pad{display:none}
+@keyframes chjump{0%,34%,100%{transform:translateY(0) scale(1,1)}6%{transform:scale(1.1,.88)}16%{transform:translateY(-26%) scale(.96,1.06)}26%{transform:scale(1.08,.9)}30%{transform:translateY(-6%)}}
+.lightburst{position:fixed;left:50%;top:50%;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;z-index:140;pointer-events:none;background:radial-gradient(circle,#fff 0,#fff 38%,rgba(255,246,170,.9) 58%,rgba(255,210,63,0) 72%)}
+.lightburst[hidden]{display:none}
+.lightburst::before{content:'';position:absolute;inset:-60%;border-radius:50%;background:repeating-conic-gradient(rgba(255,255,255,.95) 0 6deg,transparent 6deg 18deg);-webkit-mask-image:radial-gradient(closest-side,#000 20%,transparent 75%);mask-image:radial-gradient(closest-side,#000 20%,transparent 75%);animation:spin 3s linear infinite}
+.note{animation:notefly 2.4s ease-out infinite}.note.n2{animation-delay:.6s}.note.n3{animation-delay:1.2s}.note.n4{animation-delay:1.8s}
+@keyframes notefly{0%{transform:translateY(22px);opacity:0}25%{opacity:1}100%{transform:translateY(-38px);opacity:0}}
+.wh-main{width:min(1180px,98%);grid-template-columns:minmax(0,1fr) 290px minmax(0,1fr)}
+.wheel-wrap{width:min(450px,100%,60vh)}
+.wheel-wrap::before{content:'';position:absolute;inset:-12%;border-radius:50%;background:radial-gradient(circle,rgba(255,236,150,.9),rgba(255,210,63,0) 68%);animation:chglow 2.4s ease-in-out infinite}
+#wheel-rot,.wheel-fix{z-index:1}
+.bulb{animation:bulb 1s steps(1) infinite}.bulb.b2{animation-delay:-.5s}
+@keyframes bulb{0%{fill:#fff}50%{fill:#ff7a1a}}
+.cards-t{text-align:center;font:800 18px 'Baloo 2','Nunito',sans-serif;color:#fff;text-shadow:0 2px 0 var(--navy);margin-bottom:8px}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:10px;background:rgba(18,48,91,.55);border:4px solid var(--navy);border-radius:18px}
+.mc{appearance:none;cursor:pointer;min-height:96px;padding:4px 2px 3px;border:3px solid var(--navy);border-radius:12px;background:linear-gradient(#fff,#dff0ff);box-shadow:0 3px 0 var(--navy);text-align:center;transition:transform .12s}
+.mc:hover{transform:translateY(-3px)}.mc.sel{border-color:#ffb300;background:linear-gradient(#fffbe0,#ffe58a);box-shadow:0 0 0 3px #ffd23f,0 3px 0 var(--navy)}
+.mc svg{width:100%;height:62px;display:block}
+.mc span{display:block;font:800 10.5px/1.15 'Nunito',sans-serif;margin-top:2px;color:var(--navy)}
+.mc.empty{cursor:default;display:grid;place-items:center;background:rgba(255,255,255,.14);border:3px dashed rgba(255,255,255,.55);box-shadow:none}
+.mc.empty:hover{transform:none}.mc.empty b{font:800 28px 'Baloo 2',sans-serif;color:rgba(255,255,255,.7)}
+.mc.new{animation:cardin .8s cubic-bezier(.2,1.5,.4,1)}
+@keyframes cardin{from{transform:scale(.1) rotate(-14deg);opacity:0}to{transform:none;opacity:1}}
+#btn-spin:disabled{filter:grayscale(.8);opacity:.7;cursor:default}
+@media (max-width:1000px){.wh-main{grid-template-columns:1fr}.wh-right{order:2}.wh-mid{order:3}.cards{max-width:360px;margin:0 auto}}
+
+/* ===== iOS / Safari fixes ===== */
+html,body{height:100%;height:-webkit-fill-available;overscroll-behavior:none;-webkit-text-size-adjust:100%;-webkit-touch-callout:none}
+body{min-height:-webkit-fill-available;-webkit-user-select:none;user-select:none;touch-action:manipulation}
+button{touch-action:manipulation;-webkit-appearance:none;appearance:none}
+.screen{-webkit-overflow-scrolling:touch;top:0;left:0;right:0;bottom:0}
+.scene,.sysov,.flash,.fx,.sparks{top:0;left:0;right:0;bottom:0}
+.sysov{-webkit-backdrop-filter:blur(2px)}
+.screen{will-change:auto}
+/* aspect-ratio fallback cho iOS cũ (<15) */
+@supports not (aspect-ratio:1){
+  .figure{width:calc(var(--h,100%)*0.526)}
+  .stage-fig{width:calc(min(46vh,430px)*0.526)}
+  .wheel-wrap{height:min(450px,100%,60vh)}
+  .card svg,.mc svg{height:auto}
+}
+#fw{position:fixed;left:0;top:0;width:100%;height:100%;z-index:150;pointer-events:none}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+  <radialGradient id="gBody" cx=".35" cy=".3" r=".85"><stop offset="0" stop-color="#ffffff"/><stop offset=".55" stop-color="#ececef"/><stop offset="1" stop-color="#b9b9c0"/></radialGradient>
+  <linearGradient id="gShade" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity=".28"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".22"/></linearGradient>
+  <clipPath id="cpTorso"><path d="M62 124 Q100 104 138 124 Q148 172 131 218 L69 218 Q52 172 62 124Z"/></clipPath>
+</defs></svg>
+
+<div class="app" id="app">
+  <div class="scene" aria-hidden="true"><div class="cloud c1"></div><div class="cloud c2"></div></div>
+  <button class="snd" id="snd" aria-label="Bật hoặc tắt âm thanh" title="Âm thanh">🔊</button>
+  <div class="audio-hint" id="audio-hint" hidden>Chạm vào màn hình để bật nhạc</div>
+  <button class="minisys" id="minisys" aria-label="Hệ thống" title="Hệ thống"><span class="ms-ic">!</span><span class="ms-t">SYSTEM</span></button>
+  <button class="chest" id="chest" aria-label="Rương thông tin" title="Rương thông tin">
+    <svg viewBox="0 0 140 130" aria-hidden="true">
+      <defs>
+        <radialGradient id="chGlow"><stop offset="0" stop-color="#fff6b0" stop-opacity=".95"/><stop offset=".5" stop-color="#ffd23f" stop-opacity=".45"/><stop offset="1" stop-color="#ffd23f" stop-opacity="0"/></radialGradient>
+        <linearGradient id="chWood" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8a4a2c"/><stop offset="1" stop-color="#4a2012"/></linearGradient>
+        <linearGradient id="chGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff0a0"/><stop offset="1" stop-color="#e0a010"/></linearGradient>
+      </defs>
+      <circle class="ch-glow" cx="70" cy="64" r="64" fill="url(#chGlow)"/>
+      <g class="ch-rays" fill="#fff6b0" opacity=".5"><path id="chRay" d="M70 64 L65 -6 L75 -6Z M70 64 L65 134 L75 134Z"/><use href="#chRay" transform="rotate(30 70 64)"/><use href="#chRay" transform="rotate(60 70 64)"/><use href="#chRay" transform="rotate(90 70 64)"/><use href="#chRay" transform="rotate(120 70 64)"/><use href="#chRay" transform="rotate(150 70 64)"/></g>
+      <ellipse cx="70" cy="119" rx="58" ry="8" fill="#b57ec5" opacity=".55"/>
+      <g class="ch-lidO"><path d="M24 58 L32 8 Q70 -2 108 8 L116 58Z" fill="#4a2012" stroke="#2d1208" stroke-width="3"/><path d="M33 54 L39 14 Q70 8 101 14 L107 54Z" fill="#2a0f08"/><path d="M40 56 L43 12 L53 11 L50 56Z M100 56 L97 12 L87 11 L90 56Z" fill="url(#chGold)" stroke="#8a5a00" stroke-width="1.4"/></g>
+      <rect x="16" y="58" width="108" height="54" rx="7" fill="url(#chWood)" stroke="#2d1208" stroke-width="3"/>
+      <path d="M18 76 H122 M18 94 H122" stroke="#2d1208" stroke-opacity=".45" stroke-width="2"/>
+      <rect x="30" y="58" width="13" height="54" fill="url(#chGold)" stroke="#8a5a00" stroke-width="1.6"/><rect x="97" y="58" width="13" height="54" fill="url(#chGold)" stroke="#8a5a00" stroke-width="1.6"/>
+      <rect x="16" y="102" width="108" height="10" rx="3" fill="url(#chGold)" stroke="#8a5a00" stroke-width="1.6"/><circle cx="24" cy="107" r="3" fill="#fff0a0"/><circle cx="116" cy="107" r="3" fill="#fff0a0"/>
+      <g class="ch-in"><ellipse cx="70" cy="58" rx="50" ry="7" fill="#2a0f08"/><path d="M22 58 Q34 30 70 26 Q106 30 118 58Z" fill="#f2a900" stroke="#b87400" stroke-width="2"/>
+        <g fill="#ffd23f" stroke="#b87400" stroke-width="1.6"><circle cx="40" cy="49" r="7"/><circle cx="56" cy="39" r="7"/><circle cx="73" cy="34" r="8"/><circle cx="90" cy="40" r="7"/><circle cx="102" cy="50" r="7"/><circle cx="64" cy="51" r="7"/><circle cx="83" cy="52" r="7"/></g>
+        <path d="M50 38 L57 44 L50 52 L43 44Z" fill="#ff4fa3" stroke="#fff" stroke-width="1.2"/><path d="M95 28 L102 34 L95 42 L88 34Z" fill="#3ec6ff" stroke="#fff" stroke-width="1.2"/><path d="M72 42 L78 47 L72 54 L66 47Z" fill="#b66cff" stroke="#fff" stroke-width="1.2"/></g>
+      <g class="ch-lidC"><path d="M16 60 Q16 18 70 18 Q124 18 124 60Z" fill="url(#chWood)" stroke="#2d1208" stroke-width="3"/><path d="M30 58 L30 28 Q36 22 43 21 L43 58Z M110 58 L110 28 Q104 22 97 21 L97 58Z" fill="url(#chGold)" stroke="#8a5a00" stroke-width="1.6"/><rect x="14" y="55" width="112" height="8" rx="3" fill="url(#chGold)" stroke="#8a5a00" stroke-width="1.6"/></g>
+      <rect x="57" y="55" width="26" height="26" rx="5" fill="url(#chGold)" stroke="#8a5a00" stroke-width="2"/><circle cx="70" cy="66" r="3.6" fill="#4a2012"/><rect x="68.8" y="67" width="2.4" height="8" fill="#4a2012"/>
+      <g class="ch-pad"><path d="M62 80 v-8 a8 8 0 0 1 16 0 v8" fill="none" stroke="#cfd8dc" stroke-width="3.4"/><rect x="57" y="78" width="26" height="20" rx="3" fill="#90a4ae" stroke="#455a64" stroke-width="2"/><circle cx="70" cy="87" r="3.2" fill="#37474f"/></g>
+      <g class="ch-sp"><path class="tw" d="M118 14 L121 22 L129 25 L121 28 L118 36 L115 28 L107 25 L115 22Z" fill="#fff"/><path class="tw tw2" d="M14 30 L16 36 L22 38 L16 40 L14 46 L12 40 L6 38 L12 36Z" fill="#fff"/></g>
+    </svg>
+  </button>
+
+
+  <!-- TITLE -->
+  <section class="screen on" id="s-title" aria-label="Màn hình chờ">
+    <div class="logo">
+      <h1>Mặc đúng nghề</h1>
+      <p>Chọn trang phục đúng cho từng nghề nghiệp</p>
+    </div>
+    <div class="vstage" id="title-v"></div>
+    <div class="title-bottom">
+      <button class="btn-start" id="btn-start">Start</button>
+      <div class="credit">Có 15 nghề nghiệp · Mỗi lượt gồm 10 thử thách · Sai 1 câu là thất bại!</div>
+    </div>
+  </section>
+
+  <!-- LOADING -->
+  <section class="screen" id="s-loading" aria-label="Đang tải">
+    <div class="load-fig" id="load-fig"></div>
+    <div class="load-box">
+      <h2>Đang tải...</h2>
+      <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="bar">
+        <div class="bar-fill" id="bar-fill"></div>
+        <div class="bar-pct" id="bar-pct">0%</div>
+      </div>
+      <div class="tip" id="tip"></div>
+    </div>
+  </section>
+
+  <!-- ROUND -->
+  <section class="screen" id="s-round" aria-label="Thử thách">
+    <header class="hud">
+      <div class="chip" id="rd-count">Thử thách 1/5</div>
+      <div class="dots" id="rd-dots"></div>
+      <div class="chip" id="rd-score">★ 0</div>
+    </header>
+    <div class="jobbar"><small>Chức nghiệp</small><b id="job-name">Giáo viên</b></div>
+    <div class="play">
+      <div class="left">
+        <div class="stage"><div class="stage-fig idle" id="stage-fig"></div><div class="sparks" id="sparks"></div></div>
+        <div class="msg" id="msg" aria-live="polite"></div>
+      </div>
+      <div class="right">
+        <p class="ask">Chọn bộ trang phục đúng</p>
+        <div class="opts" id="opts"></div>
+        <button class="btn-next" id="btn-next" hidden>Thử thách tiếp theo</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHEEL -->
+  <section class="screen" id="s-wheel" aria-label="Vòng quay thông tin">
+    <div class="wh-top"><h2>Vòng quay thông tin</h2><div class="chip" id="wh-count">Đã khám phá 0/15</div></div>
+    <div class="wh-main">
+      <div class="wh-left">
+        <div class="wheel-wrap"><div id="wheel-rot"></div><svg class="wheel-fix" id="wheel-fix" viewBox="-250 -250 500 500" aria-hidden="true"></svg></div>
+        <button class="btn-next" id="btn-spin">Quay</button>
+      </div>
+      <div class="wh-mid"><div class="cards-t">🃏 Bộ sưu tập thẻ nghề</div><div class="cards" id="cards"></div></div>
+      <div class="wh-right">
+        <div class="wi" id="wi" aria-live="polite"></div>
+        <button class="btn-next ghost" id="btn-home">Về sảnh chính</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- SYSTEM OVERLAY -->
+<div class="sysov" id="sysov" role="dialog" aria-modal="true" aria-label="Hệ thống" aria-hidden="true">
+  <div class="syswin" id="syswin">
+    <div class="wband top"><span></span></div><div class="wband bot"><span></span></div>
+    <i class="cn tl"></i><i class="cn tr"></i><i class="cn bl"></i><i class="cn br"></i>
+    <svg class="crest" width="130" height="30" viewBox="0 0 130 30" aria-hidden="true"><path d="M2 22 H42 Q52 22 56 14 L65 3 L74 14 Q78 22 88 22 H128" fill="#0b2a6a" stroke="#9fe0ff" stroke-width="2.4"/><circle cx="65" cy="15" r="4" fill="#9fe0ff"/></svg>
+    <div class="sys-head"><span class="sys-ic">!</span><span class="sys-title">Hệ thống</span></div>
+    <div class="sys-line"></div>
+    <div class="sys-text" id="sys-text" aria-live="polite"><span class="t-on"></span><span class="t-off"></span></div>
+    <button class="sys-btn" id="sys-btn">Continue ▶</button>
+  </div>
+</div>
+
+<!-- FX -->
+<div class="fx" id="fx" hidden aria-hidden="true">
+  <div class="meteor"><svg viewBox="0 0 100 220"><defs><linearGradient id="mtTail" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#ffe27a"/><stop offset=".45" stop-color="#ff7a1a" stop-opacity=".85"/><stop offset="1" stop-color="#e3242b" stop-opacity="0"/></linearGradient><radialGradient id="mtRock" cx=".35" cy=".3" r=".9"><stop offset="0" stop-color="#8a5a44"/><stop offset=".6" stop-color="#4a2e24"/><stop offset="1" stop-color="#24140f"/></radialGradient></defs>
+    <path d="M50 150 C8 120 24 50 50 0 C76 50 92 120 50 150Z" fill="url(#mtTail)"/><path d="M50 150 C30 125 38 80 50 36 C62 80 70 125 50 150Z" fill="#fff3b0" opacity=".7"/>
+    <circle cx="50" cy="170" r="38" fill="url(#mtRock)" stroke="#ff9a3c" stroke-width="3"/><circle cx="38" cy="160" r="8" fill="#2d1a12"/><circle cx="62" cy="180" r="10" fill="#2d1a12"/><circle cx="52" cy="196" r="5" fill="#2d1a12"/><circle cx="64" cy="156" r="4" fill="#2d1a12"/></svg></div>
+  <div class="bflash"></div><div class="ring"></div><div class="boom">BOOM!</div>
+</div>
+<div class="lightburst" id="lightburst" hidden aria-hidden="true"></div>
+<div class="flash" id="flash" aria-hidden="true"></div>
+
+<script>
+'use strict';
+/* ================= tiện ích ================= */
+const $=(s,r=document)=>r.querySelector(s);
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+const star=(cx,cy,r,fill)=>{const p=[];for(let i=0;i<10;i++){const a=-Math.PI/2+i*Math.PI/5,rr=i%2?r*.42:r;p.push((cx+rr*Math.cos(a)).toFixed(1)+','+(cy+rr*Math.sin(a)).toFixed(1));}return '<polygon points="'+p.join(' ')+'" fill="'+fill+'"/>';};
+
+/* ================= vẽ nhân vật ================= */
+const TORSO='M62 124 Q100 104 138 124 Q148 172 131 218 L69 218 Q52 172 62 124Z';
+const cloth=(d,fill,stroke)=>`<path d="${d}" fill="${fill}" stroke="${stroke||'rgba(0,0,0,.22)'}" stroke-width="1.5" stroke-linejoin="round"/><path d="${d}" fill="url(#gShade)"/>`;
+const limb=(x1,y1,x2,y2,w)=>`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#bfbfc6" stroke-width="${w+3}" stroke-linecap="round"/><line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#eeeef1" stroke-width="${w}" stroke-linecap="round"/><line x1="${x1-w*.18}" y1="${y1}" x2="${x2-w*.18}" y2="${y2}" stroke="#fff" stroke-opacity=".7" stroke-width="${w*.3}" stroke-linecap="round"/>`;
+const ARM_L=[66,130,47,214],ARM_R=[134,130,153,214];
+const sleeves=(c,t)=>{
+  const f=a=>{const x=(a[0]+(a[2]-a[0])*t).toFixed(1),y=(a[1]+(a[3]-a[1])*t).toFixed(1);
+    return `<line x1="${a[0]}" y1="${a[1]}" x2="${x}" y2="${y}" stroke="rgba(0,0,0,.25)" stroke-width="24" stroke-linecap="round"/><line x1="${a[0]}" y1="${a[1]}" x2="${x}" y2="${y}" stroke="${c}" stroke-width="21" stroke-linecap="round"/>`;};
+  return f(ARM_L)+f(ARM_R);
+};
+const pants=c=>`<line x1="86" y1="212" x2="84" y2="318" stroke="rgba(0,0,0,.25)" stroke-width="28" stroke-linecap="round"/><line x1="114" y1="212" x2="116" y2="318" stroke="rgba(0,0,0,.25)" stroke-width="28" stroke-linecap="round"/>`+
+  `<line x1="86" y1="212" x2="84" y2="318" stroke="${c}" stroke-width="25"/><line x1="114" y1="212" x2="116" y2="318" stroke="${c}" stroke-width="25"/><rect x="70" y="200" width="60" height="30" rx="12" fill="${c}"/>`+
+  `<line x1="80" y1="215" x2="78" y2="316" stroke="#fff" stroke-opacity=".14" stroke-width="7"/><line x1="108" y1="215" x2="110" y2="316" stroke="#fff" stroke-opacity=".14" stroke-width="7"/>`;
+const clipTorso=inner=>`<g clip-path="url(#cpTorso)">${inner}</g>`;
+
+/* mũ */
+const HAT={
+  white:`<path d="M56 50 C54 -2 146 -2 144 50Z" fill="#fff" stroke="#c4cad0" stroke-width="2"/><path d="M56 50 C54 -2 146 -2 144 50Z" fill="url(#gShade)"/><path d="M100 10 L100 46" stroke="#d3d8dd" stroke-width="3"/><rect x="46" y="46" width="108" height="10" rx="5" fill="#f4f6f8" stroke="#c4cad0" stroke-width="2"/>`,
+  nonla:`<path d="M32 54 Q70 26 100 0 Q130 26 168 54 Q100 66 32 54Z" fill="#ecd391" stroke="#a9843b" stroke-width="2"/><g stroke="#c4a350" stroke-width="1.4" fill="none"><path d="M100 3 L52 57"/><path d="M100 3 L72 60"/><path d="M100 3 L88 62"/><path d="M100 3 L112 62"/><path d="M100 3 L128 60"/><path d="M100 3 L148 57"/><path d="M62 38 Q100 48 138 38"/><path d="M48 48 Q100 58 152 48"/></g><path d="M66 56 Q60 92 80 106 M134 56 Q140 92 120 106" stroke="#e8557f" stroke-width="3" fill="none" stroke-linecap="round"/>`,
+  guard:`<path d="M56 48 L61 22 Q100 8 139 22 L144 48Z" fill="#1c1c22"/><path d="M56 48 L61 22 Q100 8 139 22 L144 48Z" fill="url(#gShade)"/><rect x="56" y="38" width="88" height="10" fill="#2f2f39"/><path d="M52 48 Q100 64 148 48 Q100 54 52 48Z" fill="#0b0b0e"/><circle cx="100" cy="30" r="7" fill="#ffc107" stroke="#a87a00" stroke-width="1.5"/>${star(100,30,4.5,'#d32f2f')}`,
+  police:`<path d="M56 48 L61 22 Q100 8 139 22 L144 48Z" fill="#2f7d3a"/><path d="M56 48 L61 22 Q100 8 139 22 L144 48Z" fill="url(#gShade)"/><rect x="56" y="38" width="88" height="10" fill="#d22b2b"/><path d="M52 48 Q100 64 148 48 Q100 54 52 48Z" fill="#1e4a26"/><circle cx="100" cy="29" r="7.5" fill="#ffc107" stroke="#a87a00" stroke-width="1.5"/>${star(100,29,5,'#d32f2f')}`,
+  grab:`<path d="M50 64 C44 -8 156 -8 150 64 L138 64 Q100 46 62 64Z" fill="#00b14f" stroke="#007a37" stroke-width="2"/><path d="M50 64 C44 -8 156 -8 150 64 L138 64 Q100 46 62 64Z" fill="url(#gShade)"/><path d="M94 4 L106 4 L106 50 L94 50Z" fill="#fff" opacity=".95"/><path d="M62 64 L80 106 M138 64 L120 106" stroke="#0a6b34" stroke-width="3.5" stroke-linecap="round"/><rect x="84" y="102" width="32" height="7" rx="3" fill="#0a6b34"/>`,
+  soldier:`<ellipse cx="100" cy="48" rx="58" ry="8" fill="#6a7a38" stroke="#4a5a25" stroke-width="2"/><path d="M50 48 C48 -4 152 -4 150 48Z" fill="#7f9247" stroke="#56662a" stroke-width="2"/><path d="M50 48 C48 -4 152 -4 150 48Z" fill="url(#gShade)"/><rect x="50" y="38" width="100" height="9" fill="#56662a"/><circle cx="100" cy="24" r="10" fill="#d32f2f" stroke="#8d1b1b" stroke-width="1.5"/>${star(100,24,8,'#ffd600')}`,
+  fa:`<g transform="rotate(-7 100 30)"><path d="M70 38 Q72 6 100 6 Q128 6 130 38Z" fill="#1f3a6b"/><path d="M70 38 Q72 6 100 6 Q128 6 130 38Z" fill="url(#gShade)"/><rect x="68" y="32" width="64" height="8" rx="3" fill="#d62839"/><circle cx="100" cy="20" r="5" fill="#ffc107"/></g>`
+};
+
+const OUTFITS={
+  xaydung:{
+    job:'Công nhân xây dựng',
+    fact:'Công nhân xây dựng đội mũ trắng, mặc áo phản quang để an toàn khi làm việc ở công trường.',
+    lower:pants('#4b5563'),shoe:'#3a2f25',
+    sleeve:['#5b6b84',.62],
+    body:cloth(TORSO,'#ff7a1a')+clipTorso('<rect x="40" y="160" width="120" height="9" fill="#eef3f6"/><rect x="40" y="192" width="120" height="9" fill="#eef3f6"/>')+'<path d="M86 114 L100 148 L114 114Z" fill="#5b6b84"/><line x1="100" y1="148" x2="100" y2="218" stroke="rgba(0,0,0,.28)" stroke-width="2"/>',
+    head:HAT.white,item:''
+  },
+  giaovien:{
+    job:'Giáo viên',
+    fact:'Giáo viên mặc áo dài, dùng phấn viết bảng để dạy học sinh.',
+    lower:pants('#fdfdfd'),
+    sleeve:['#f06292',.92],
+    body:cloth('M63 123 Q100 104 137 123 Q147 160 128 204 Q134 255 142 298 Q100 310 58 298 Q66 255 72 204 Q53 160 63 123Z','#f06292')+
+      '<path d="M90 112 Q100 120 110 112 L110 124 Q100 130 90 124Z" fill="#d93d78"/><path d="M100 124 L128 148" stroke="#b3185c" stroke-width="2.5" fill="none"/><circle cx="112" cy="134" r="2.6" fill="#ffd54f"/><circle cx="121" cy="142" r="2.6" fill="#ffd54f"/>'+
+      '<g fill="#ffe082"><circle cx="84" cy="168" r="3.5"/><circle cx="116" cy="190" r="3.5"/><circle cx="88" cy="232" r="3.5"/><circle cx="112" cy="258" r="3.5"/><circle cx="80" cy="282" r="3.5"/><circle cx="122" cy="284" r="3.5"/></g><path d="M80 238 L77 296 M120 238 L123 296" stroke="rgba(0,0,0,.22)" stroke-width="1.5" fill="none"/>',
+    head:'<g fill="none" stroke="#3a3f4d" stroke-width="2.4"><circle cx="86" cy="62" r="12.5"/><circle cx="114" cy="62" r="12.5"/><path d="M98 61 L102 61"/></g>',
+    item:'<g transform="translate(154 218) rotate(-32)"><rect x="-4.5" y="-30" width="9" height="42" rx="3.5" fill="#fff" stroke="#8d97a3" stroke-width="1.6"/><rect x="-4.5" y="-30" width="9" height="8" rx="3" fill="#e9eef3"/></g><g fill="#fff" opacity=".9"><circle cx="170" cy="184" r="2.2"/><circle cx="176" cy="192" r="1.6"/><circle cx="165" cy="190" r="1.4"/></g>'
+  },
+  bacsi:{
+    job:'Bác sĩ',
+    fact:'Bác sĩ mặc áo blouse trắng để khám và chữa bệnh cho mọi người.',
+    lower:pants('#4f86a8'),
+    sleeve:['#fbfdff',.92],
+    body:cloth('M62 122 Q100 104 138 122 Q150 175 141 250 Q100 262 59 250 Q50 175 62 122Z','#fbfdff','#aebbc4')+
+      '<path d="M87 112 L100 172 L113 112Z" fill="#4f86a8"/><path d="M87 112 L100 172 L113 112" stroke="#aebbc4" stroke-width="2" fill="none"/>'+
+      '<g fill="#aebbc4"><circle cx="100" cy="190" r="2.4"/><circle cx="100" cy="212" r="2.4"/><circle cx="100" cy="234" r="2.4"/></g>'+
+      '<rect x="110" y="196" width="18" height="15" rx="2" fill="none" stroke="#aebbc4" stroke-width="1.8"/><rect x="73" y="160" width="14" height="12" rx="2" fill="#fff" stroke="#aebbc4" stroke-width="1.6"/><path d="M80 163 L80 169 M77 166 L83 166" stroke="#e53935" stroke-width="2"/>'+
+      '<path d="M89 113 Q84 148 100 156 Q116 148 111 113" stroke="#3b3f48" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="100" cy="160" r="4.5" fill="#cfd8dc" stroke="#3b3f48" stroke-width="1.5"/>',
+    head:'',item:''
+  },
+  congan:{
+    job:'Công an',
+    fact:'Chú công an mặc quân phục xanh lá, giữ gìn an ninh và trật tự cho mọi người.',
+    lower:pants('#2f6b3d'),shoe:'#1d1d1d',
+    sleeve:['#3f9a52',.92],
+    body:cloth(TORSO,'#3f9a52')+'<path d="M86 114 L94 130 L88 133Z M114 114 L106 130 L112 133Z" fill="#d22b2b"/>'+
+      '<rect x="62" y="119" width="18" height="7" rx="2" fill="#2f6b3d" transform="rotate(-16 71 122)"/><rect x="120" y="119" width="18" height="7" rx="2" fill="#2f6b3d" transform="rotate(16 129 122)"/>'+
+      '<rect x="108" y="150" width="17" height="15" rx="2" fill="none" stroke="rgba(0,0,0,.3)" stroke-width="1.8"/><circle cx="80" cy="156" r="4.5" fill="#ffc107" stroke="#a87a00" stroke-width="1.2"/>'+
+      '<line x1="100" y1="132" x2="100" y2="206" stroke="rgba(0,0,0,.25)" stroke-width="2"/>'+
+      clipTorso('<rect x="40" y="203" width="120" height="10" fill="#1b1b1b"/>')+'<rect x="94" y="202" width="12" height="12" rx="2" fill="#ffc107" stroke="#a87a00" stroke-width="1.2"/>',
+    head:HAT.police,item:''
+  },
+  nongdan:{
+    job:'Nông dân',
+    fact:'Bác nông dân mặc áo vải, đội nón lá để trồng lúa, trồng rau ngoài đồng.',
+    lower:pants('#3b2f2a'),
+    sleeve:['#7b5233',.92],
+    body:cloth('M62 122 Q100 104 138 122 Q150 170 141 238 Q100 247 59 238 Q50 170 62 122Z','#7b5233')+
+      '<line x1="100" y1="124" x2="100" y2="240" stroke="rgba(0,0,0,.3)" stroke-width="2"/><g fill="#d9b98a"><circle cx="106" cy="150" r="2.2"/><circle cx="106" cy="172" r="2.2"/><circle cx="106" cy="194" r="2.2"/><circle cx="106" cy="216" r="2.2"/></g>'+
+      '<rect x="112" y="186" width="20" height="22" rx="2" fill="#9a6b43" stroke="rgba(0,0,0,.3)" stroke-width="1.4" stroke-dasharray="3 2"/>'+
+      '<ellipse cx="100" cy="118" rx="23" ry="8" fill="#f2e8d0" stroke="#a8854f" stroke-width="1.6"/><path d="M82 118 L88 123 M92 120 L98 125 M102 120 L108 125 M112 118 L118 123" stroke="#a8854f" stroke-width="1.5"/>',
+    head:HAT.nonla,item:''
+  },
+  baove:{
+    job:'Bảo vệ',
+    fact:'Chú bảo vệ mặc áo xanh dương, đội mũ đen để trông coi và giữ an toàn cho mọi người.',
+    lower:pants('#1d2f57'),shoe:'#1d1d1d',
+    sleeve:['#2f7be0',.92],
+    body:cloth(TORSO,'#2f7be0')+'<path d="M87 114 L100 134 L113 114Z" fill="#fff" opacity=".95"/>'+
+      '<rect x="62" y="119" width="19" height="8" rx="2" fill="#1d2f57" transform="rotate(-16 71 123)"/><rect x="119" y="119" width="19" height="8" rx="2" fill="#1d2f57" transform="rotate(16 129 123)"/>'+
+      '<rect x="74" y="152" width="18" height="16" rx="2" fill="none" stroke="rgba(0,0,0,.3)" stroke-width="1.8"/><rect x="108" y="150" width="16" height="6" rx="1.5" fill="#fff"/><path d="M80 142 L88 142 L88 148 L84 152 L80 148Z" fill="#ffc107"/>'+
+      '<line x1="100" y1="134" x2="100" y2="206" stroke="rgba(0,0,0,.25)" stroke-width="2"/>'+clipTorso('<rect x="40" y="203" width="120" height="10" fill="#1b1b1b"/>')+'<rect x="94" y="202" width="12" height="12" rx="2" fill="#c0c7d1" stroke="#7a828f" stroke-width="1.2"/>',
+    head:HAT.guard,item:''
+  },
+  shipper:{
+    job:'Shipper',
+    fact:'Shipper mặc áo xanh, đội mũ bảo hiểm và mang hàng đến tay người nhận.',
+    lower:pants('#2b2f36'),shoe:'#e8e8e8',
+    sleeve:['#00b14f',.6],
+    body:cloth(TORSO,'#00b14f')+'<path d="M88 114 L100 132 L112 114Z" fill="#007f3a"/><line x1="100" y1="132" x2="100" y2="216" stroke="rgba(0,0,0,.25)" stroke-width="2"/><rect x="108" y="152" width="16" height="14" rx="2" fill="none" stroke="rgba(0,0,0,.28)" stroke-width="1.8"/>'+
+      clipTorso('<rect x="40" y="188" width="120" height="6" fill="#d9ffe8" opacity=".85"/>'),
+    head:HAT.grab,
+    item:'<g transform="translate(154 238)"><rect x="-22" y="-16" width="44" height="36" rx="3" fill="#c98f50" stroke="#8a5d2a" stroke-width="2"/><rect x="-5" y="-16" width="10" height="36" fill="#e9cf9f"/><rect x="-16" y="4" width="13" height="9" rx="1.5" fill="#fff" opacity=".9"/></g>'
+  },
+  bodoi:{
+    job:'Bộ đội',
+    fact:'Chú bộ đội mặc quân phục, đội nón cối để bảo vệ Tổ quốc.',
+    lower:pants('#5a6a30'),shoe:'#2c2a22',
+    sleeve:['#6e7f3e',.92],
+    body:cloth(TORSO,'#6e7f3e')+'<path d="M86 114 L94 130 L88 133Z M114 114 L106 130 L112 133Z" fill="#d32f2f"/>'+
+      '<rect x="72" y="156" width="21" height="19" rx="2" fill="#7b8e47" stroke="rgba(0,0,0,.3)" stroke-width="1.6"/><rect x="107" y="156" width="21" height="19" rx="2" fill="#7b8e47" stroke="rgba(0,0,0,.3)" stroke-width="1.6"/>'+
+      '<line x1="100" y1="132" x2="100" y2="204" stroke="rgba(0,0,0,.25)" stroke-width="2"/>'+clipTorso('<rect x="40" y="203" width="120" height="10" fill="#6b4a2b"/>')+star(100,208,7,'#ffd600'),
+    head:HAT.soldier,item:''
+  },
+  tiepvien:{
+    job:'Tiếp viên hàng không',
+    fact:'Tiếp viên hàng không mặc đồng phục, kéo vali và phục vụ hành khách trên máy bay.',
+    lower:'<path d="M70 203 L130 203 L143 266 Q100 277 57 266Z" fill="rgba(0,0,0,.25)"/><path d="M72 203 L128 203 L140 263 Q100 273 60 263Z" fill="#1f3a6b"/><path d="M72 203 L128 203 L140 263 Q100 273 60 263Z" fill="url(#gShade)"/>',
+    shoe:'#8e1b2c',
+    sleeve:['#1f3a6b',.92],
+    body:cloth(TORSO,'#1f3a6b')+'<path d="M86 113 L100 160 L114 113Z" fill="#fff"/><path d="M84 117 Q100 111 116 117 L100 143Z" fill="#d62839"/><circle cx="112" cy="156" r="3" fill="#ffc107"/><path d="M120 150 l5 3 l-5 3z" fill="#ffc107"/>'+
+      '<path d="M86 113 L100 160 L114 113" stroke="rgba(0,0,0,.25)" stroke-width="1.6" fill="none"/>',
+    head:HAT.fa,
+    item:'<g><line x1="154" y1="222" x2="154" y2="240" stroke="#555" stroke-width="4" stroke-linecap="round"/><rect x="138" y="238" width="46" height="62" rx="7" fill="#b02a3e" stroke="#7a1626" stroke-width="2"/><rect x="138" y="238" width="46" height="62" rx="7" fill="url(#gShade)"/><path d="M148 242 L148 298 M160 242 L160 298 M172 242 L172 298" stroke="rgba(0,0,0,.22)" stroke-width="2.2"/><rect x="148" y="250" width="26" height="9" rx="2" fill="#ffc107" opacity=".9"/><circle cx="146" cy="305" r="4" fill="#333"/><circle cx="176" cy="305" r="4" fill="#333"/></g>'
+  }
+};
+/* ===== 6 nghề mới ===== */
+const HAT_N={
+  beret:`<g transform="rotate(-9 100 30)"><path d="M52 44 C48 4 108 -6 138 12 C156 22 152 40 146 46 Q100 56 52 44Z" fill="#d62839" stroke="#8d1b25" stroke-width="2"/><path d="M52 44 C48 4 108 -6 138 12 C156 22 152 40 146 46 Q100 56 52 44Z" fill="url(#gShade)"/><path d="M96 4 Q100 -8 108 0" stroke="#8d1b25" stroke-width="4" fill="none" stroke-linecap="round"/></g>`,
+  cap:`<path d="M56 46 C54 4 146 4 144 46Z" fill="#bfd72f" stroke="#7d8f18" stroke-width="2"/><path d="M56 46 C54 4 146 4 144 46Z" fill="url(#gShade)"/><path d="M100 8 L100 40" stroke="#7d8f18" stroke-width="2"/><path d="M52 46 Q100 76 148 46 Q100 52 52 46Z" fill="#8fa31c" stroke="#7d8f18" stroke-width="1.5"/>`,
+  fire:`<path d="M38 56 Q100 74 162 56 L152 46 L48 46Z" fill="#c62828" stroke="#7f1313" stroke-width="2"/><path d="M54 50 C50 -4 150 -4 146 50Z" fill="#e53935" stroke="#9b1c1c" stroke-width="2"/><path d="M54 50 C50 -4 150 -4 146 50Z" fill="url(#gShade)"/><path d="M92 8 Q100 -4 108 8 L108 48 L92 48Z" fill="#b71c1c"/><path d="M76 16 L124 16 L118 40 L82 40Z" fill="#ffd54f" stroke="#a87a00" stroke-width="1.6"/>${star(100,28,8,'#d32f2f')}`,
+  toque:`<path d="M62 52 L64 36 C44 36 42 10 66 6 C68 -16 98 -22 100 -8 C102 -22 132 -16 134 6 C158 10 156 36 136 36 L138 52Z" fill="#fff" stroke="#c4cad0" stroke-width="2"/><path d="M62 52 L64 36 C44 36 42 10 66 6 C68 -16 98 -22 100 -8 C102 -22 132 -16 134 6 C158 10 156 36 136 36 L138 52Z" fill="url(#gShade)"/><path d="M82 10 L82 34 M100 -4 L100 34 M118 10 L118 34" stroke="#d3d8dd" stroke-width="2.4" fill="none"/><rect x="62" y="36" width="76" height="16" rx="4" fill="#f4f6f8" stroke="#c4cad0" stroke-width="2"/>`,
+  helmet:`<circle cx="100" cy="62" r="56" fill="rgba(150,205,255,.22)" stroke="#e6ebf1" stroke-width="8"/><circle cx="100" cy="62" r="60" fill="none" stroke="#9aa5b1" stroke-width="1.6"/><circle cx="100" cy="62" r="52" fill="none" stroke="#9aa5b1" stroke-width="1.6"/><path d="M62 38 Q72 18 96 12" stroke="#fff" stroke-width="6" fill="none" stroke-linecap="round" opacity=".85"/><line x1="146" y1="22" x2="158" y2="4" stroke="#9aa5b1" stroke-width="3"/><circle cx="159" cy="2" r="4" fill="#e53935"/>`
+};
+Object.assign(OUTFITS,{
+  hoasi:{
+    job:'Hoạ sĩ',
+    fact:'Hoạ sĩ cầm cọ vẽ và bảng màu để vẽ nên những bức tranh đầy màu sắc.',
+    lower:pants('#3b4a6b'),shoe:'#4a3a2a',
+    sleeve:['#f3e9d2',.92],
+    body:cloth('M62 122 Q100 104 138 122 Q150 175 141 245 Q100 257 59 245 Q50 175 62 122Z','#f3e9d2','#b9a98a')+
+      '<path d="M88 113 Q100 122 112 113 L112 124 Q100 130 88 124Z" fill="#d9c9a4"/>'+
+      '<circle cx="78" cy="156" r="6" fill="#e53935"/><circle cx="116" cy="140" r="5" fill="#1e88e5"/><circle cx="90" cy="196" r="7" fill="#fdd835"/><circle cx="122" cy="214" r="6" fill="#43a047"/><circle cx="104" cy="170" r="4" fill="#8e24aa"/><circle cx="76" cy="228" r="5" fill="#fb8c00"/>',
+    head:HAT_N.beret,
+    item:'<g transform="translate(18 204) rotate(-12)"><path d="M2 16 C-2 -4 28 -12 42 -2 C54 8 48 28 32 30 C24 31 22 24 16 24 C8 24 4 30 2 16Z" fill="#d9a05b" stroke="#7a4f22" stroke-width="2"/><ellipse cx="14" cy="14" rx="4" ry="3" fill="#7a4f22"/><circle cx="22" cy="3" r="4" fill="#e53935"/><circle cx="33" cy="3" r="4" fill="#1e88e5"/><circle cx="41" cy="12" r="4" fill="#fdd835"/><circle cx="37" cy="23" r="4" fill="#43a047"/><circle cx="26" cy="13" r="3.4" fill="#8e24aa"/></g>'+
+      '<g transform="translate(154 220) rotate(24)"><rect x="-2.6" y="-60" width="5.2" height="74" rx="2.6" fill="#8d5524" stroke="#5a3213" stroke-width="1.2"/><rect x="-4" y="-66" width="8" height="12" fill="#cfd8dc" stroke="#78909c" stroke-width="1.2"/><path d="M-4 -66 Q0 -88 4 -66Z" fill="#e53935"/></g>'
+  },
+  laocong:{
+    job:'Lao công',
+    fact:'Cô chú lao công cầm chổi quét dọn đường phố, giữ cho thành phố luôn sạch đẹp.',
+    lower:pants('#3f4a5c'),shoe:'#2b2f36',
+    sleeve:['#bfd72f',.92],
+    body:cloth(TORSO,'#bfd72f','#7d8f18')+clipTorso('<rect x="40" y="150" width="120" height="9" fill="#e8ecef"/><rect x="40" y="188" width="120" height="9" fill="#e8ecef"/>')+
+      '<path d="M86 114 L100 134 L114 114Z" fill="#7d8f18"/><line x1="100" y1="134" x2="100" y2="218" stroke="rgba(0,0,0,.28)" stroke-width="2"/><rect x="73" y="162" width="19" height="17" rx="2" fill="none" stroke="rgba(0,0,0,.3)" stroke-width="1.8"/>',
+    head:HAT_N.cap,
+    item:'<g><line x1="156" y1="116" x2="168" y2="306" stroke="#5a3213" stroke-width="7" stroke-linecap="round"/><line x1="156" y1="116" x2="168" y2="306" stroke="#c28a4b" stroke-width="3" stroke-linecap="round"/><path d="M158 298 L178 298 L192 338 L146 338Z" fill="#d8b04a" stroke="#8a6a1c" stroke-width="2"/><path d="M162 304 L156 336 M168 304 L168 336 M174 304 L180 336" stroke="#8a6a1c" stroke-width="1.6"/><rect x="157" y="292" width="24" height="9" rx="3" fill="#c0392b"/><ellipse cx="160" cy="221" rx="10" ry="11" fill="url(#gBody)" stroke="#bfbfc6" stroke-width="1.2"/></g>'
+  },
+  linhcuuhoa:{
+    job:'Lính cứu hoả',
+    fact:'Lính cứu hoả mặc đồ chống cháy, dùng vòi phun nước để dập lửa và cứu người.',
+    lower:pants('#2f3a4f')+'<rect x="72" y="268" width="24" height="8" fill="#dfe6ee" opacity=".9"/><rect x="104" y="268" width="24" height="8" fill="#dfe6ee" opacity=".9"/>',shoe:'#1d1d1d',
+    sleeve:['#d9a21b',.92],
+    body:cloth(TORSO,'#d9a21b','#9a6f08')+clipTorso('<rect x="40" y="156" width="120" height="10" fill="#e8ecef"/><rect x="40" y="188" width="120" height="10" fill="#e8ecef"/>')+
+      '<path d="M86 114 L100 134 L114 114Z" fill="#2f3a4f"/><line x1="100" y1="134" x2="100" y2="218" stroke="rgba(0,0,0,.3)" stroke-width="2"/><circle cx="92" cy="146" r="2.6" fill="#7f8c99"/><circle cx="92" cy="176" r="2.6" fill="#7f8c99"/><circle cx="92" cy="206" r="2.6" fill="#7f8c99"/>',
+    head:HAT_N.fire,
+    item:'<path d="M158 230 Q192 262 176 316 Q168 338 146 336" fill="none" stroke="#7a1a12" stroke-width="12" stroke-linecap="round"/><path d="M158 230 Q192 262 176 316 Q168 338 146 336" fill="none" stroke="#e0b23a" stroke-width="8" stroke-linecap="round"/>'+
+      '<g transform="translate(154 220) rotate(18)"><rect x="-5" y="-36" width="10" height="40" rx="3" fill="#b0b7c0" stroke="#6c7683" stroke-width="1.6"/><path d="M-6 -36 L6 -36 L4 -44 L-4 -44Z" fill="#e53935"/></g>'+
+      '<path d="M168 176 Q190 120 198 168" fill="none" stroke="#7fd5ff" stroke-width="5" stroke-linecap="round" opacity=".9"/><path d="M168 176 Q186 134 196 160" fill="none" stroke="#fff" stroke-width="1.6" opacity=".8"/><circle cx="186" cy="138" r="2.6" fill="#bfeaff"/><circle cx="192" cy="150" r="2.2" fill="#bfeaff"/><circle cx="178" cy="132" r="2.2" fill="#bfeaff"/>'
+  },
+  daubep:{
+    job:'Đầu bếp',
+    fact:'Đầu bếp mặc áo trắng, đội mũ cao, dùng dao để chế biến những món ăn ngon.',
+    lower:pants('#59616e'),shoe:'#222',
+    sleeve:['#ffffff',.92],
+    body:cloth('M62 122 Q100 104 138 122 Q150 175 141 240 Q100 252 59 240 Q50 175 62 122Z','#ffffff','#aebbc4')+
+      '<path d="M88 116 L124 150 L124 242" stroke="#c4cad0" stroke-width="2" fill="none"/><g fill="#7b8794"><circle cx="88" cy="158" r="2.8"/><circle cx="88" cy="180" r="2.8"/><circle cx="88" cy="202" r="2.8"/><circle cx="88" cy="224" r="2.8"/><circle cx="112" cy="158" r="2.8"/><circle cx="112" cy="180" r="2.8"/><circle cx="112" cy="202" r="2.8"/><circle cx="112" cy="224" r="2.8"/></g>'+
+      '<path d="M84 114 Q100 126 116 114 L110 126 L100 142 L90 126Z" fill="#e53935" stroke="#a82727" stroke-width="1.2"/>',
+    head:HAT_N.toque,
+    item:'<g transform="translate(154 222) rotate(16)"><path d="M-7 -4 L6 -4 L6 -54 Q3 -64 -7 -60Z" fill="#e3e9ee" stroke="#8d97a3" stroke-width="1.6"/><path d="M-7 -4 L6 -4 L6 -12 L-7 -12Z" fill="#cfd8dc"/><rect x="-6" y="-4" width="12" height="26" rx="4" fill="#5b3a29" stroke="#2f1d12" stroke-width="1.4"/><circle cx="0" cy="3" r="1.6" fill="#d9c9a4"/><circle cx="0" cy="13" r="1.6" fill="#d9c9a4"/></g>'
+  },
+  casi:{
+    job:'Ca sĩ',
+    fact:'Ca sĩ cầm micro và mặc trang phục lấp lánh để biểu diễn, cất tiếng hát cho mọi người cùng nghe.',
+    lower:pants('#2b2150'),shoe:'#e91e8c',
+    sleeve:['#8e24aa',.92],
+    body:cloth(TORSO,'#8e24aa','#5c1670')+'<path d="M86 114 L100 142 L114 114Z" fill="#ffd23f" stroke="#b88a00" stroke-width="1.4"/>'+
+      '<g fill="#ffe082"><circle cx="80" cy="150" r="2.6"/><circle cx="120" cy="160" r="2.6"/><circle cx="88" cy="178" r="2.6"/><circle cx="112" cy="190" r="2.6"/><circle cx="78" cy="204" r="2.6"/></g>'+star(80,172,7,'#ffe082')+star(118,138,6,'#ff80c0')+star(112,176,5,'#fff')+
+      clipTorso('<rect x="40" y="203" width="120" height="10" fill="#ffd23f"/>')+
+      '<text x="100" y="196" text-anchor="middle" font-size="22" fill="#ffd23f" font-weight="800">♪</text>',
+    head:'<path d="M64 54 Q100 -8 136 54" stroke="#2b2f36" stroke-width="5" fill="none" stroke-linecap="round"/><rect x="56" y="52" width="12" height="20" rx="5" fill="#ff4fa3" stroke="#2b2f36" stroke-width="2"/><rect x="132" y="52" width="12" height="20" rx="5" fill="#ff4fa3" stroke="#2b2f36" stroke-width="2"/><path d="M62 70 Q64 94 88 92" stroke="#2b2f36" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="90" cy="92" r="4.6" fill="#ff4fa3" stroke="#2b2f36" stroke-width="1.6"/>',
+    item:'<g transform="translate(154 218) rotate(14)"><rect x="-4.5" y="-24" width="9" height="46" rx="4" fill="#37474f" stroke="#1c262b" stroke-width="1.4"/><rect x="-6.5" y="-27" width="13" height="6" rx="2" fill="#ffd23f"/><circle cx="0" cy="-35" r="11.5" fill="#cfd8dc" stroke="#607d8b" stroke-width="2"/><path d="M-10 -35 H10 M0 -46 V-24 M-6.5 -43 Q0 -35 -6.5 -27 M6.5 -43 Q0 -35 6.5 -27" stroke="#78909c" stroke-width="1.2" fill="none"/></g>'+
+      '<g font-weight="800"><text class="note" x="174" y="170" font-size="26" fill="#ff4fa3">♪</text><text class="note n2" x="160" y="150" font-size="30" fill="#ffd23f" stroke="#12305b" stroke-width=".8">♫</text><text class="note n3" x="182" y="140" font-size="22" fill="#7fd5ff">♪</text><text class="note n4" x="10" y="150" font-size="26" fill="#ff80c0">♫</text></g>'
+  },
+  phihanhgia:{
+    job:'Phi hành gia',
+    fact:'Phi hành gia mặc đồ du hành vũ trụ để bay ra ngoài không gian và nghiên cứu.',
+    lower:pants('#eef1f5')+'<rect x="70" y="296" width="30" height="8" fill="#ff7a1a"/><rect x="100" y="296" width="30" height="8" fill="#ff7a1a"/>',shoe:'#8d99a6',
+    sleeve:['#f4f6f8',.92],
+    back:'<rect x="50" y="116" width="100" height="104" rx="14" fill="#cfd6de" stroke="#8d99a6" stroke-width="2"/>',
+    body:cloth(TORSO,'#f4f6f8','#9aa5b1')+clipTorso('<rect x="40" y="196" width="120" height="12" fill="#ff7a1a"/>')+
+      '<ellipse cx="100" cy="112" rx="30" ry="9" fill="#e8edf2" stroke="#9aa5b1" stroke-width="2"/>'+
+      '<rect x="82" y="146" width="36" height="24" rx="4" fill="#dfe5ea" stroke="#8d99a6" stroke-width="1.6"/><circle cx="91" cy="154" r="3.2" fill="#e53935"/><circle cx="100" cy="154" r="3.2" fill="#43a047"/><circle cx="109" cy="154" r="3.2" fill="#1e88e5"/><rect x="88" y="161" width="24" height="4" rx="2" fill="#8d99a6"/>'+
+      '<circle cx="74" cy="136" r="8" fill="#1e5fbf" stroke="#fff" stroke-width="1.5"/>'+star(74,136,5,'#fff')+'<rect x="116" y="130" width="16" height="11" rx="1.5" fill="#d62839"/>'+star(124,135.5,3.2,'#ffd600')+
+      '<ellipse cx="48" cy="208" rx="12" ry="5" fill="#ff7a1a"/><ellipse cx="152" cy="208" rx="12" ry="5" fill="#ff7a1a"/>',
+    head:HAT_N.helmet,item:''
+  }
+});
+const INFO={
+  xaydung:'Công nhân xây dựng làm việc ở công trường để xây nhà ở, trường học, cầu và đường. Họ phải đội mũ bảo hộ, mặc áo phản quang để giữ an toàn. Công việc cần sức khoẻ, sự cẩn thận và tinh thần làm việc nhóm. Nhờ họ mà thành phố có thêm nhiều công trình vững chắc phục vụ mọi người.',
+  giaovien:'Giáo viên là người truyền đạt kiến thức và dạy cho học sinh cách làm người. Họ soạn bài, giảng bài, chấm bài và luôn quan tâm đến từng học sinh. Công việc cần sự kiên nhẫn, tình yêu thương và khả năng giải thích dễ hiểu. Giáo viên được ví như người lái đò đưa các em đến bến bờ tri thức.',
+  bacsi:'Bác sĩ khám bệnh, chẩn đoán và chữa bệnh để bảo vệ sức khoẻ cho mọi người. Họ làm việc ở bệnh viện, phòng khám hoặc trạm y tế, nhiều khi phải trực cả đêm. Để làm nghề này cần học tập nhiều năm, thật cẩn thận và giàu lòng nhân ái. Bác sĩ luôn đặt sức khoẻ và sự sống của bệnh nhân lên hàng đầu.',
+  congan:'Chú công an giữ gìn an ninh, trật tự và bảo vệ cuộc sống bình yên của nhân dân. Họ điều tiết giao thông, phòng chống tội phạm và hỗ trợ người dân khi gặp khó khăn. Nghề này đòi hỏi sự dũng cảm, kỷ luật và tinh thần trách nhiệm cao. Khi cần giúp đỡ khẩn cấp, bạn có thể gọi số 113 để gặp công an.',
+  nongdan:'Nông dân trồng lúa, trồng rau, nuôi gia súc để làm ra lương thực cho cả xã hội. Họ thường làm việc ngoài đồng, dậy sớm và phải theo dõi thời tiết từng mùa vụ. Công việc rất vất vả nhưng được mùa là niềm vui lớn. Mỗi hạt gạo chúng ta ăn đều chứa đựng mồ hôi của bác nông dân.',
+  baove:'Bảo vệ trông coi trường học, toà nhà, cửa hàng và giữ gìn tài sản cho mọi người. Họ kiểm tra người ra vào, đi tuần tra và phát hiện những điều bất thường. Nghề này cần sự tỉnh táo, trung thực và biết giữ bình tĩnh khi có sự cố. Nhờ có bảo vệ, nơi chúng ta học tập và làm việc luôn an toàn.',
+  shipper:'Shipper nhận đơn hàng và giao đến tận tay người mua bằng xe máy hoặc xe đạp. Họ phải thuộc đường, đúng giờ và giữ cho hàng hoá nguyên vẹn. Dù nắng hay mưa, họ vẫn chạy để khách hàng nhận được món đồ. Khi đi đường, shipper luôn phải đội mũ bảo hiểm và tuân thủ luật giao thông.',
+  bodoi:'Bộ đội bảo vệ biên giới, biển đảo và giữ gìn hoà bình cho Tổ quốc. Họ rèn luyện thể lực, học kỹ năng quân sự và sống kỷ luật trong doanh trại. Khi có thiên tai, bão lũ, bộ đội còn giúp dân sơ tán và khắc phục hậu quả. Hình ảnh anh bộ đội cụ Hồ luôn được nhân dân yêu mến.',
+  tiepvien:'Tiếp viên hàng không phục vụ hành khách trên máy bay và đảm bảo chuyến bay an toàn. Họ hướng dẫn cách dùng dây an toàn, áo phao và hỗ trợ khi có sự cố. Nghề này cần giao tiếp tốt, thân thiện và có sức khoẻ để bay nhiều giờ. Họ thường biết ít nhất một ngoại ngữ để trò chuyện với hành khách nước ngoài.',
+  hoasi:'Hoạ sĩ dùng cọ, màu và sự sáng tạo để vẽ nên những bức tranh đẹp. Họ quan sát thế giới xung quanh, phối hợp màu sắc và gửi gắm cảm xúc vào tác phẩm. Có hoạ sĩ vẽ tranh phong cảnh, chân dung, truyện tranh hoặc minh hoạ sách. Tranh của họ làm cho cuộc sống thêm rực rỡ và giàu cảm xúc.',
+  laocong:'Lao công quét dọn đường phố, thu gom rác và giữ cho môi trường luôn sạch sẽ. Nhiều cô chú làm việc từ rất sớm hoặc ban đêm khi mọi người đang ngủ. Công việc tuy vất vả, ít được chú ý nhưng vô cùng cần thiết cho sức khoẻ cộng đồng. Chúng ta nên bỏ rác đúng nơi quy định để cảm ơn các cô chú.',
+  linhcuuhoa:'Lính cứu hoả dập tắt các đám cháy và cứu người gặp nạn trong hoả hoạn. Họ mặc quần áo chống cháy, đội mũ bảo hộ và dùng vòi phun nước áp lực cao. Ngoài chữa cháy, họ còn cứu hộ trong tai nạn, lũ lụt và sập nhà. Khi có cháy, hãy bình tĩnh thoát ra ngoài và gọi ngay số 114.',
+  daubep:'Đầu bếp chọn nguyên liệu, nêm nếm và chế biến những món ăn ngon cho thực khách. Họ mặc áo trắng, đội mũ cao và sử dụng nhiều loại dao, nồi chảo khác nhau. Nghề này cần sự khéo léo, vị giác tinh tế và luôn giữ căn bếp sạch sẽ. Một đầu bếp giỏi còn sáng tạo ra món mới làm mọi người thích thú.',
+  casi:'Ca sĩ dùng giọng hát để mang âm nhạc và cảm xúc đến cho khán giả. Họ luyện giọng mỗi ngày, học nhạc lý và biểu diễn trên sân khấu hoặc trong phòng thu. Khi diễn, ca sĩ thường cầm micro và mặc trang phục lấp lánh thật nổi bật. Giữ gìn giọng hát, uống nước ấm và nghỉ ngơi đủ là điều rất quan trọng với nghề này.',
+  phihanhgia:'Phi hành gia bay vào vũ trụ để nghiên cứu Trái Đất, Mặt Trăng và các hành tinh. Họ mặc bộ đồ du hành có mũ kính kín để có không khí và chống bức xạ. Để làm nghề này cần học giỏi, khoẻ mạnh và qua nhiều năm huấn luyện nghiêm ngặt. Phạm Tuân là người Việt Nam đầu tiên bay vào vũ trụ, vào năm 1980.'
+};
+const KEYS=['xaydung','giaovien','bacsi','congan','nongdan','baove','shipper','bodoi','tiepvien','hoasi','laocong','linhcuuhoa','daubep','casi','phihanhgia'];
+
+function faceSVG(mood){
+  if(mood==='happy'){
+    return '<circle cx="74" cy="76" r="6" fill="#ff9aa8" opacity=".55"/><circle cx="126" cy="76" r="6" fill="#ff9aa8" opacity=".55"/>'+
+      '<path d="M79 65 Q86 54 93 65 M107 65 Q114 54 121 65" stroke="#2a2a33" stroke-width="3.6" fill="none" stroke-linecap="round"/>'+
+      '<path d="M87 76 Q100 98 113 76Z" fill="#8c2f39"/><path d="M93 87 Q100 93 107 87 Q100 82 93 87Z" fill="#ff8a95"/>';
+  }
+  if(mood==='cry'){
+    return '<path d="M79 53 L93 49 M121 53 L107 49" stroke="#555" stroke-width="2.6" stroke-linecap="round"/>'+
+      '<path d="M80 56 L92 62 L80 68 M120 56 L108 62 L120 68" stroke="#2a2a33" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>'+
+      '<path d="M82 70 Q77 88 80 104 M118 70 Q123 88 120 104" stroke="#8fd8ff" stroke-width="3.2" fill="none" opacity=".75" stroke-linecap="round"/>'+
+      '<path class="tear" d="M80 72 q-5 9 0 13 q5 -4 0 -13z" fill="#4fc3f7"/><path class="tear t2" d="M120 72 q-5 9 0 13 q5 -4 0 -13z" fill="#4fc3f7"/>'+
+      '<path d="M86 90 Q100 72 114 90 Q100 84 86 90Z" fill="#8c2f39" stroke="#8c2f39" stroke-width="2" stroke-linejoin="round"/>';
+  }
+  return '<ellipse cx="86" cy="62" rx="4" ry="5.6" fill="#2a2a33"/><ellipse cx="114" cy="62" rx="4" ry="5.6" fill="#2a2a33"/><circle cx="87.4" cy="60" r="1.4" fill="#fff"/><circle cx="115.4" cy="60" r="1.4" fill="#fff"/>'+
+    '<path d="M91 80 Q100 87 109 80" fill="none" stroke="#555" stroke-width="2.6" stroke-linecap="round"/>';
+}
+
+function charSVG(key,mood){
+  const o=key?OUTFITS[key]:null;
+  const shoe=o&&o.shoe?o.shoe:'url(#gBody)';
+  let s='<svg viewBox="0 -20 200 380" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">';
+  s+='<ellipse cx="100" cy="342" rx="64" ry="9" fill="rgba(0,0,0,.2)"/>';
+  s+=`<ellipse cx="80" cy="333" rx="21" ry="9" fill="${shoe}" stroke="#a9a9b0" stroke-width="1.2"/><ellipse cx="120" cy="333" rx="21" ry="9" fill="${shoe}" stroke="#a9a9b0" stroke-width="1.2"/>`;
+  s+=limb(86,212,84,322,22)+limb(114,212,116,322,22);
+  if(o) s+=o.lower;
+  if(o&&o.back) s+=o.back;
+  s+=limb(66,130,47,214,15)+limb(134,130,153,214,15);
+  if(o) s+=sleeves(o.sleeve[0],o.sleeve[1]);
+  s+=`<path d="${TORSO}" fill="url(#gBody)" stroke="#bfbfc6" stroke-width="1.5"/>`;
+  s+='<ellipse cx="100" cy="108" rx="12" ry="13" fill="url(#gBody)" stroke="#bfbfc6" stroke-width="1.2"/>';
+  if(o) s+=o.body;
+  s+='<ellipse cx="46" cy="221" rx="10" ry="11" fill="url(#gBody)" stroke="#bfbfc6" stroke-width="1.2"/><ellipse cx="154" cy="221" rx="10" ry="11" fill="url(#gBody)" stroke="#bfbfc6" stroke-width="1.2"/>';
+  s+='<ellipse cx="100" cy="62" rx="40" ry="44" fill="url(#gBody)" stroke="#bfbfc6" stroke-width="1.5"/>';
+  s+='<ellipse cx="84" cy="40" rx="12" ry="7" fill="#fff" opacity=".55" transform="rotate(-25 84 40)"/>';
+  s+=faceSVG(mood);
+  if(o){ s+=o.head; s+=o.item; }
+  return s+'</svg>';
+}
+
+/* ================= âm thanh (WebAudio, không cần file) ================= */
+const Snd={
+  ctx:null,master:null,mg:null,on:true,playing:false,timer:null,step:0,nextT:0,noiseBuf:null,
+  MEL:[76,0,79,0,81,79,76,0, 74,0,76,0,79,0,76,74, 72,0,76,0,79,0,81,0, 79,0,76,0,74,0,72,0],
+  BASS:[48,43,41,43],
+  init(){
+    if(this.ctx) return;
+    try{
+      const AC=window.AudioContext||window.webkitAudioContext; if(!AC) return;
+      this.ctx=new AC();
+      this.master=this.ctx.createGain(); this.master.gain.value=.8; this.master.connect(this.ctx.destination);
+      this.mg=this.ctx.createGain(); this.mg.gain.value=.55; this.mg.connect(this.master);
+      const len=this.ctx.sampleRate; this.noiseBuf=this.ctx.createBuffer(1,len,this.ctx.sampleRate);
+      const d=this.noiseBuf.getChannelData(0); for(let i=0;i<len;i++) d[i]=Math.random()*2-1;
+      this.ctx.onstatechange=()=>updateHint();
+      try{ const b=this.ctx.createBuffer(1,1,22050),sr=this.ctx.createBufferSource(); sr.buffer=b; sr.connect(this.ctx.destination); sr.start(0); }catch(e){}
+    }catch(e){ this.ctx=null; }
+  },
+  resume(){ this.init(); if(this.ctx&&this.ctx.state!=='running'&&this.ctx.state!=='closed'){ try{ const r=this.ctx.resume(); if(r&&r.catch) r.catch(()=>{}); }catch(e){} } },
+  running(){ return !!this.ctx&&this.ctx.state==='running'; },
+  mf(n){ return 440*Math.pow(2,(n-69)/12); },
+  tone(f,t,dur,type,vol,dest){
+    const c=this.ctx,o=c.createOscillator(),g=c.createGain();
+    o.type=type; o.frequency.setValueAtTime(f,t);
+    g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(vol,t+.012); g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+    o.connect(g); g.connect(dest||this.master); o.start(t); o.stop(t+dur+.05);
+  },
+  noise(t,dur,vol,type,freq,dest){
+    const c=this.ctx,s=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();
+    s.buffer=this.noiseBuf; f.type=type; f.frequency.value=freq;
+    g.gain.setValueAtTime(vol,t); g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+    s.connect(f); f.connect(g); g.connect(dest||this.master); s.start(t); s.stop(t+dur+.02);
+  },
+  kick(t){
+    const c=this.ctx,o=c.createOscillator(),g=c.createGain();
+    o.frequency.setValueAtTime(160,t); o.frequency.exponentialRampToValueAtTime(42,t+.12);
+    g.gain.setValueAtTime(.5,t); g.gain.exponentialRampToValueAtTime(.0001,t+.16);
+    o.connect(g); g.connect(this.mg); o.start(t); o.stop(t+.2);
+  },
+  playStep(step,t){
+    const s=step%32,bar=s>>3,b=s&7,m=this.MEL[s],root=this.BASS[bar];
+    if(m){ this.tone(this.mf(m),t,.24,'triangle',.22,this.mg); this.tone(this.mf(m+12),t,.12,'sine',.05,this.mg); }
+    if(b===0||b===4) this.tone(this.mf(root),t,.42,'triangle',.3,this.mg);
+    if(b===2||b===6) this.tone(this.mf(root+7),t,.2,'triangle',.16,this.mg);
+    if(b===0||b===4) this.kick(t);
+    if(b===2||b===6) this.noise(t,.12,.22,'bandpass',1800,this.mg);
+    if(b&1) this.noise(t,.04,.07,'highpass',7000,this.mg);
+  },
+  startMusic(){
+    this.init(); if(!this.ctx||this.playing||!this.on) return;
+    this.playing=true;
+    const now=this.ctx.currentTime;
+    this.mg.gain.cancelScheduledValues(now); this.mg.gain.setValueAtTime(.55,now);
+    this.nextT=now+.1; this.step=0;
+    this.timer=setInterval(()=>{
+      while(this.nextT<this.ctx.currentTime+.35){ this.playStep(this.step,this.nextT); this.nextT+=.23; this.step++; }
+    },100);
+  },
+  stopMusic(fade){
+    if(!this.playing) return;
+    this.playing=false; clearInterval(this.timer);
+    const now=this.ctx.currentTime;
+    this.mg.gain.cancelScheduledValues(now); this.mg.gain.setValueAtTime(this.mg.gain.value,now);
+    this.mg.gain.linearRampToValueAtTime(.0001,now+(fade||.5));
+  },
+  sfx(name){
+    if(!this.on) return; this.init(); if(!this.ctx) return; this.resume();
+    const t=this.ctx.currentTime+.01;
+    if(name==='click') this.tone(660,t,.08,'square',.07);
+    if(name==='good'){ [523,659,784,1047].forEach((f,i)=>this.tone(f,t+i*.09,.22,'triangle',.25)); }
+    if(name==='bad'){ [262,220,185,147].forEach((f,i)=>this.tone(f,t+i*.17,.2,'sawtooth',.1)); }
+    if(name==='win'){ [523,659,784,1047,784,1047,1319].forEach((f,i)=>this.tone(f,t+i*.12,.3,'triangle',.25)); }
+    if(name==='tick') this.tone(880,t,.04,'sine',.05);
+    if(name==='sys'){ this.tone(1200,t,.06,'square',.06); this.tone(1800,t+.06,.08,'square',.05); }
+    if(name==='shine'){ [784,988,1175,1568,1976,2349].forEach((f,i)=>this.tone(f,t+i*.08,.5,'sine',.18)); this.noise(t,.9,.12,'highpass',5000); }
+    if(name==='whoosh'){
+      const c=this.ctx,src=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();
+      src.buffer=this.noiseBuf; src.loop=true; f.type='bandpass'; f.Q.value=1.5;
+      f.frequency.setValueAtTime(2400,t); f.frequency.exponentialRampToValueAtTime(300,t+1.1);
+      g.gain.setValueAtTime(.05,t); g.gain.linearRampToValueAtTime(.45,t+1.1); g.gain.linearRampToValueAtTime(.0001,t+1.2);
+      src.connect(f); f.connect(g); g.connect(this.master); src.start(t); src.stop(t+1.25);
+    }
+    if(name==='boom'){
+      const c=this.ctx,o=c.createOscillator(),g=c.createGain();
+      o.type='sine'; o.frequency.setValueAtTime(130,t); o.frequency.exponentialRampToValueAtTime(28,t+.9);
+      g.gain.setValueAtTime(.9,t); g.gain.exponentialRampToValueAtTime(.0001,t+1); o.connect(g); g.connect(this.master); o.start(t); o.stop(t+1.05);
+      this.noise(t,1,.8,'lowpass',900);
+    }
+  },
+  alarmT:null,alarmWant:false,
+  alarm(on){
+    this.alarmWant=on; clearInterval(this.alarmT); this.alarmT=null;
+    if(!on||!this.on) return;
+    this.init(); if(!this.ctx) return; this.resume();
+    const beep=()=>{ const t=this.ctx.currentTime+.01; this.tone(900,t,.28,'sawtooth',.08); this.tone(650,t+.32,.28,'sawtooth',.08); };
+    beep(); this.alarmT=setInterval(beep,640);
+  },
+  toggle(){
+    this.on=!this.on;
+    if(!this.on){ this.stopMusic(.2); clearInterval(this.alarmT); this.alarmT=null; }
+    else { this.resume(); if(this.alarmWant) this.alarm(true); if(screenNow==='title'&&!introActive) this.startMusic(); }
+    return this.on;
+  }
+};
+
+/* ================= màn hình ================= */
+let screenNow='title',introActive=true,chestUnlocked=false,chestOpened=false;
+function show(id){
+  screenNow=id; document.body.dataset.screen=id;
+  ['title','loading','round','wheel'].forEach(s=>$('#s-'+s).classList.toggle('on',s===id));
+  if(id==='title') startTitle(); else stopTitle();
+  refreshChest();
+}
+function updateHint(){ $('#audio-hint').hidden=!(screenNow==='title'&&Snd.on&&!introActive&&!Snd.running()); }
+
+/* đội hình chữ V */
+const POS=[{l:50,b:0,h:100,z:5},{l:31,b:10,h:80,z:4},{l:69,b:10,h:80,z:4},{l:14,b:21,h:62,z:3},{l:86,b:21,h:62,z:3}];
+function buildV(el,keys,mood){
+  el.innerHTML=POS.map((p,i)=>`<div class="vchar" style="left:${p.l}%;bottom:${p.b}%;height:${p.h}%;z-index:${p.z}"><div class="bob" style="animation-delay:${(-i*.37).toFixed(2)}s"><span class="tag">${OUTFITS[keys[i]].job}</span><div class="figure">${charSVG(keys[i],mood)}</div></div></div>`).join('');
+}
+
+/* màn hình chờ: nhân vật đổi trang phục liên tục */
+let titleTimer=null,titleCur=[0,2,4,6,8],titleN=0;
+function startTitle(){
+  stopTitle();
+  titleCur=[0,2,4,6,8]; titleN=0;
+  buildV($('#title-v'),titleCur.map(i=>KEYS[i]),'idle');
+  titleTimer=setInterval(()=>{
+    const order=[1,3,0,4,2], i=order[titleN%5]; titleN++;
+    const vc=$('#title-v').children[i]; if(!vc) return;
+    const fig=$('.figure',vc), tag=$('.tag',vc);
+    fig.classList.remove('swap'); void fig.offsetWidth; fig.classList.add('swap');
+    setTimeout(()=>{
+      titleCur[i]=(titleCur[i]+1)%KEYS.length;
+      const k=KEYS[titleCur[i]];
+      fig.innerHTML=charSVG(k,'idle'); tag.textContent=OUTFITS[k].job;
+    },200);
+  },900);
+  if(Snd.on&&!introActive) Snd.startMusic();
+  updateHint();
+}
+function stopTitle(){ clearInterval(titleTimer); titleTimer=null; $('#audio-hint').hidden=true; }
+
+/* loading */
+const TIPS=[
+  'Mẹo: quan sát mũ và dụng cụ trên tay để đoán nghề nhé!',
+  'Mỗi nghề nghiệp đều có trang phục riêng để làm việc an toàn.',
+  'Chỉ cần sai một câu, thiên thạch sẽ giáng xuống thế giới. Cẩn thận nhé!',
+  'Sắp xong rồi, chuẩn bị nhập vai nào!'
+];
+function runLoading(done){
+  $('#load-fig').innerHTML=charSVG(null,'idle');
+  let p=0,tipI=-1;
+  const fill=$('#bar-fill'),pct=$('#bar-pct'),bar=$('#bar');
+  const setTip=()=>{ const n=Math.min(TIPS.length-1,Math.floor(p/26)); if(n!==tipI){ tipI=n; $('#tip').textContent=TIPS[n]; } };
+  fill.style.width='0%'; pct.textContent='0%'; setTip();
+  const t=setInterval(()=>{
+    p=Math.min(100,p+Math.random()*6+1.2);
+    const v=Math.floor(p);
+    fill.style.width=v+'%'; pct.textContent=v+'%'; bar.setAttribute('aria-valuenow',v); setTip();
+    if(p>=100){ clearInterval(t); setTimeout(done,550); }
+  },110);
+}
+
+/* ================= trò chơi ================= */
+const G={order:[],i:0,score:0,done:[],key:null,wrongs:0,solved:false,timer:null};
+
+function setFigure(key,mood,pop){
+  const f=$('#stage-fig');
+  f.className='stage-fig '+mood+(pop?' pop':'');
+  f.innerHTML=charSVG(key,mood);
+}
+function setMsg(kind,title,sub){
+  const m=$('#msg'); m.className='msg'+(kind?' '+kind:'');
+  m.innerHTML=title?`<strong>${title}</strong>${sub?`<span>${sub}</span>`:''}`:'';
+  if(kind){ void m.offsetWidth; m.classList.add('pop'); }
+}
+function sparkle(){
+  const box=$('#sparks'); box.innerHTML='';
+  for(let i=0;i<14;i++){
+    const s=document.createElement('span'); s.className='spark';
+    const a=Math.random()*Math.PI*2,d=90+Math.random()*90;
+    s.style.setProperty('--dx',Math.cos(a)*d+'px'); s.style.setProperty('--dy',Math.sin(a)*d+'px');
+    s.style.animationDelay=(Math.random()*.15)+'s';
+    box.appendChild(s);
+  }
+  setTimeout(()=>{box.innerHTML='';},1300);
+}
+
+/* ================= hệ thống (cửa sổ trò chuyện kiểu manga) ================= */
+const Sys={
+  ov:$('#sysov'),win:$('#syswin'),txt:$('#sys-text'),btn:$('#sys-btn'),
+  q:[],i:0,typing:false,tm:null,lock:false,done:null,lastLabel:null,full:'',
+  open(q,o){
+    o=o||{}; this.q=q; this.i=0; this.done=o.onDone||null; this.lastLabel=o.btn||null;
+    this.win.classList.toggle('sad',!!o.sad); this.ov.classList.toggle('sad',!!o.sad);
+    this.ov.classList.add('on'); this.ov.setAttribute('aria-hidden','false');
+    this.render(); setTimeout(()=>this.btn.focus({preventScroll:true}),250);
+  },
+  render(){
+    const it=this.q[this.i]; this.lock=true;
+    this.win.classList.remove('flick'); void this.win.offsetWidth; this.win.classList.add('flick');
+    setTimeout(()=>{
+      const w=!!it.warn;
+      this.win.classList.toggle('warn',w); this.ov.classList.toggle('warnbg',w); Snd.alarm(w);
+      this.btn.textContent=(this.i===this.q.length-1&&this.lastLabel)?this.lastLabel:'Continue ▶';
+      this.type(it.t); Snd.sfx('sys');
+    },100);
+    setTimeout(()=>{this.lock=false;},220);
+  },
+  type(t){
+    clearInterval(this.tm); this.full=t; this.typing=true; let n=0;
+    const on=$('.t-on',this.txt),off=$('.t-off',this.txt); on.textContent=''; off.textContent=t;
+    this.tm=setInterval(()=>{ n++; on.textContent=t.slice(0,n); off.textContent=t.slice(n); if(n>=t.length) this.finish(); },16);
+  },
+  finish(){ clearInterval(this.tm); $('.t-on',this.txt).textContent=this.full; $('.t-off',this.txt).textContent=''; this.typing=false; },
+  next(){
+    if(this.lock) return;
+    if(this.typing){ this.finish(); return; }
+    Snd.sfx('click');
+    if(this.i<this.q.length-1){
+      this.win.classList.remove('warn'); this.ov.classList.remove('warnbg'); Snd.alarm(false);
+      this.i++; this.render();
+    }else this.close();
+  },
+  close(){
+    clearInterval(this.tm); Snd.alarm(false);
+    this.win.classList.remove('warn','sad'); this.ov.classList.remove('warnbg','sad','on'); this.ov.setAttribute('aria-hidden','true');
+    const d=this.done; this.done=null; if(d) d();
+  }
+};
+Sys.btn.addEventListener('click',()=>Sys.next());
+(()=>{ const b='WARNING ⚠ '.repeat(14); document.querySelectorAll('.wband span').forEach(s=>{ s.textContent=b+b; }); })();
+
+function startIntro(){
+  Sys.open([
+    {t:'Xin chào, người được chọn. Chào mừng cậu đến với thế giới chọn chức nghiệp.'},
+    {t:'Thế giới này hiện đang lâm nguy do sự thiếu hụt kiến thức về các nghề nghiệp trong xã hội.',warn:true},
+    {t:'Để giải cứu thế giới này, bạn cần lấy được "rương thông tin" - nơi chứa đựng tri thức về các loại nghề nghiệp phổ biến trong cuộc sống. Hãy tham gia trò chơi và hoàn thành 10/10 thử thách về các câu đố liên quan đến nghề nghiệp để lấy được chiếc rương và giải cứu thế giới.'},
+    {t:'Chúc may mắn, người được chọn!'}
+  ],{onDone:()=>{ introActive=false; if(Snd.on&&screenNow==='title') Snd.startMusic(); updateHint(); }});
+}
+
+/* ================= rương + hệ thống thu nhỏ ================= */
+function refreshChest(){
+  const c=$('#chest'); if(!c) return;
+  c.classList.toggle('unlocked',chestUnlocked); c.classList.toggle('open',chestOpened); c.classList.toggle('ready',chestUnlocked&&!chestOpened);
+}
+$('#minisys').addEventListener('click',()=>{
+  Snd.sfx('click');
+  Sys.open([{t:chestOpened?'Cám ơn bạn đã cứu thế giới.':'Hãy cứu lấy thế giới, hỡi người hùng.'}]);
+});
+
+/* ================= mở rương: phóng to -> vào giữa -> ánh sáng loá ================= */
+let chestBusy=false;
+$('#chest').addEventListener('click',()=>{
+  if(chestBusy) return; Snd.sfx('click');
+  if(!chestUnlocked){ Sys.open([{t:'Bạn chưa đạt đủ điều kiện để có được rương.'}]); return; }
+  if(chestOpened){ enterWheel(); return; }
+  chestBusy=true; chestOpened=true;
+  const c=$('#chest'),L=$('#lightburst'),A=$('#app').getBoundingClientRect(),r=c.getBoundingClientRect();
+  c.classList.add('opening'); c.style.zIndex=60; Snd.sfx('whoosh');
+  const dx=A.left+A.width/2-(r.left+r.width/2),dy=A.top+A.height/2-(r.top+r.height/2),sc=Math.min(A.width,A.height)*.45/r.width;
+  const mv=c.animate([{transform:'translate(0,0) scale(1)'},{transform:`translate(${dx}px,${dy}px) scale(${sc})`}],{duration:2600,easing:'cubic-bezier(.45,.05,.3,1)',fill:'forwards'});
+  mv.onfinish=()=>{
+    c.classList.add('open'); Snd.sfx('shine');
+    L.getAnimations().forEach(a=>a.cancel()); L.hidden=false;
+    const grow=L.animate([{transform:'scale(0)',opacity:1},{transform:`scale(${Math.hypot(innerWidth,innerHeight)/14})`,opacity:1}],{duration:1800,easing:'cubic-bezier(.5,0,.8,.6)',fill:'forwards'});
+    grow.onfinish=()=>{
+      enterWheel(); mv.cancel(); c.style.zIndex=''; c.classList.remove('opening');
+      L.animate([{opacity:1},{opacity:0}],{duration:1300,delay:350,fill:'forwards'}).onfinish=()=>{ L.hidden=true; L.getAnimations().forEach(a=>a.cancel()); chestBusy=false; };
+    };
+  };
+});
+function enterWheel(){
+  show('wheel'); wheelUI();
+  if(WH.sel) showInfo(WH.sel,true); else $('#wi').innerHTML=WI_EMPTY;
+}
+
+/* ================= vòng quay thông tin ================= */
+const WH={rot:0,spinning:false,seen:new Set(),order:[],sel:null};
+const FORCED=['giaovien','laocong']; /* 2 lượt quay đầu tiên cố định */
+const WI_EMPTY='<div class="wi-ph">🎁 Nhấn nút <b>Quay</b> để khám phá thông tin về 15 nghề nghiệp nhé!<br><small>Nghề đã quay sẽ được lưu thành thẻ bài, bấm vào thẻ để xem lại.</small></div>';
+const EMO={xaydung:'👷',giaovien:'📚',bacsi:'🩺',congan:'👮',nongdan:'🌾',baove:'🛡️',shipper:'📦',bodoi:'🎖️',tiepvien:'✈️',hoasi:'🎨',laocong:'🧹',linhcuuhoa:'🚒',daubep:'🍳',casi:'🎤',phihanhgia:'🚀'};
+function buildWheel(){
+  const n=KEYS.length,step=360/n,R=190,cols=['#e3242b','#ff9f1c','#ffd23f','#2ec36b','#1b86dc'];
+  const pt=(a,r)=>{const t=a*Math.PI/180;return (r*Math.cos(t)).toFixed(2)+' '+(r*Math.sin(t)).toFixed(2);};
+  let s='<svg viewBox="-250 -250 500 500" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><radialGradient id="whSheen"><stop offset=".25" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#fff" stop-opacity=".3"/></radialGradient></defs><circle r="196" fill="#12305b"/>';
+  KEYS.forEach((k,i)=>{
+    const a0=i*step-step/2,a1=i*step+step/2,nm=OUTFITS[k].job,fs=nm.length>14?10:nm.length>10?11.5:13.5,done=WH.seen.has(k);
+    s+=`<path d="M0 0 L${pt(a0,R)} A${R} ${R} 0 0 1 ${pt(a1,R)}Z" fill="${done?'#8d99a8':cols[i%5]}" stroke="#fff" stroke-width="2.5" stroke-linejoin="round"/>`;
+    s+=`<g transform="rotate(${i*step})" opacity="${done?.65:1}">`+(done?`<circle cx="60" cy="0" r="10" fill="#1fa75a" stroke="#fff" stroke-width="2"/><text x="60" y="1" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="800" fill="#fff">✓</text>`:`<text x="60" y="1" text-anchor="middle" dominant-baseline="central" font-size="19">${EMO[k]}</text>`)+
+      `<text x="${R-12}" y="1" text-anchor="end" dominant-baseline="central" fill="#fff" stroke="#12305b" stroke-width="3.2" paint-order="stroke" stroke-linejoin="round" font-family="Baloo 2,Nunito,sans-serif" font-weight="800" font-size="${fs}">${nm}</text></g>`;
+  });
+  $('#wheel-rot').innerHTML=s+'<circle r="190" fill="url(#whSheen)"/></svg>';
+  let d='';for(let i=0;i<24;i++){const t=i*15*Math.PI/180;d+=`<circle class="bulb${i%2?' b2':''}" cx="${(203*Math.cos(t)).toFixed(1)}" cy="${(203*Math.sin(t)).toFixed(1)}" r="4.6" fill="#fff" stroke="#8a5a00" stroke-width="1"/>`;}
+  $('#wheel-fix').innerHTML='<circle r="203" fill="none" stroke="#12305b" stroke-width="22"/><circle r="203" fill="none" stroke="#ffc21a" stroke-width="16"/><circle r="212" fill="none" stroke="#fff3a8" stroke-width="2" opacity=".8"/>'+d+
+    '<circle r="42" fill="#12305b"/><circle r="38" fill="#ffd23f" stroke="#fff" stroke-width="3"/><circle r="28" fill="#e3242b" stroke="#a30f17" stroke-width="3"/>'+star(0,0,19,'#fff6b0')+
+    '<path d="M194 0 L238 -19 Q250 0 238 19Z" fill="#e3242b" stroke="#12305b" stroke-width="5" stroke-linejoin="round"/><circle cx="232" cy="0" r="5.5" fill="#fff"/>';
+}
+function renderCards(newKey){
+  $('#cards').innerHTML=Array.from({length:KEYS.length},(_,n)=>{const k=WH.order[n];
+    return k?`<button class="mc${k===WH.sel?' sel':''}${k===newKey?' new':''}" data-k="${k}" aria-label="Xem thẻ ${OUTFITS[k].job}">${charSVG(k,'happy')}<span>${OUTFITS[k].job}</span></button>`:'<div class="mc empty"><b>?</b></div>';}).join('');
+}
+function wheelUI(newKey){
+  const all=WH.seen.size>=KEYS.length,b=$('#btn-spin');
+  $('#wh-count').textContent='Đã khám phá '+WH.seen.size+'/'+KEYS.length;
+  b.disabled=all||WH.spinning; b.textContent=all?'Đã khám phá đủ 🎉':'Quay';
+  buildWheel(); renderCards(newKey);
+}
+function showInfo(k,quiet){
+  const o=OUTFITS[k],w=$('#wi'); WH.sel=k;
+  w.innerHTML=`<div class="wi-fig">${charSVG(k,'happy')}</div><div class="wi-tx"><small>Nghề nghiệp</small><h3>${o.job}</h3><p>${INFO[k]}</p></div>`;
+  w.classList.remove('pop'); void w.offsetWidth; w.classList.add('pop');
+  document.querySelectorAll('#cards .mc[data-k]').forEach(c=>c.classList.toggle('sel',c.dataset.k===k));
+  if(!quiet) Snd.sfx('good');
+}
+
+/* ================= pháo hoa 3 giây ================= */
+const FW={cv:null,ctx:null,parts:[],raf:0,end:0,next:0,rk:[],
+  start(ms){
+    if(!this.cv){ this.cv=document.createElement('canvas'); this.cv.id='fw'; document.body.appendChild(this.cv); this.ctx=this.cv.getContext('2d'); }
+    const dpr=Math.min(window.devicePixelRatio||1,2),W=innerWidth,H=innerHeight;
+    this.cv.width=W*dpr; this.cv.height=H*dpr; this.ctx.setTransform(dpr,0,0,dpr,0,0); this.W=W; this.H=H;
+    this.parts=[]; this.rk=[]; cancelAnimationFrame(this.raf);
+    const t0=performance.now(); this.end=t0+ms; this.next=t0; this.cv.style.display='block';
+    const loop=now=>{
+      const c=this.ctx; c.clearRect(0,0,this.W,this.H);
+      if(now<this.end&&now>=this.next){ this.launch(); this.launch(); this.next=now+170; }
+      this.step(); 
+      if(now<this.end||this.parts.length||this.rk.length) this.raf=requestAnimationFrame(loop);
+      else { c.clearRect(0,0,this.W,this.H); this.cv.style.display='none'; }
+    };
+    this.raf=requestAnimationFrame(loop);
+    Snd.sfx('win'); let n=0; const iv=setInterval(()=>{ Snd.sfx('boom'); if(++n>=3) clearInterval(iv); },700);
+  },
+  launch(){
+    const x=this.W*(.12+Math.random()*.76),ty=this.H*(.15+Math.random()*.35);
+    this.rk.push({x,y:this.H,vy:-(this.H-ty)/38,ty,hue:Math.floor(Math.random()*360)});
+  },
+  burst(x,y,hue){
+    const n=46+Math.floor(Math.random()*20);
+    for(let i=0;i<n;i++){
+      const a=Math.random()*Math.PI*2,sp=1.5+Math.random()*4.2;
+      this.parts.push({x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,life:1,dec:.012+Math.random()*.012,hue:hue+Math.random()*40-20,r:2+Math.random()*1.6});
+    }
+  },
+  step(){
+    const c=this.ctx;
+    for(let i=this.rk.length-1;i>=0;i--){
+      const r=this.rk[i]; r.y+=r.vy; r.vy*=.985;
+      c.fillStyle='hsl('+r.hue+',100%,75%)'; c.beginPath(); c.arc(r.x,r.y,2.4,0,6.283); c.fill();
+      if(r.y<=r.ty||Math.abs(r.vy)<1){ this.burst(r.x,r.y,r.hue); this.rk.splice(i,1); }
+    }
+    for(let i=this.parts.length-1;i>=0;i--){
+      const p=this.parts[i]; p.x+=p.vx; p.y+=p.vy; p.vx*=.985; p.vy=p.vy*.985+.05; p.life-=p.dec;
+      if(p.life<=0){ this.parts.splice(i,1); continue; }
+      c.globalAlpha=p.life; c.fillStyle='hsl('+p.hue+',100%,'+(55+p.life*20)+'%)';
+      c.beginPath(); c.arc(p.x,p.y,p.r*p.life+.4,0,6.283); c.fill();
+    }
+    c.globalAlpha=1;
+  }
+};
+let fwShown=false;
+function spin(){
+  if(WH.spinning) return;
+  const free=KEYS.map((_,i)=>i).filter(i=>!WH.seen.has(KEYS[i])); if(!free.length) return;
+  WH.spinning=true; $('#btn-spin').disabled=true; Snd.sfx('click');
+  const n=KEYS.length,step=360/n,target=(WH.order.length<FORCED.length&&free.indexOf(KEYS.indexOf(FORCED[WH.order.length]))>-1)?KEYS.indexOf(FORCED[WH.order.length]):free[Math.floor(Math.random()*free.length)],off=(Math.random()-.5)*step*.7;
+  const cur=((WH.rot%360)+360)%360,fin=(((-target*step+off)%360)+360)%360,delta=((fin-cur)%360+360)%360;
+  WH.rot+=360*(5+Math.floor(Math.random()*3))+delta;
+  const el=$('#wheel-rot'); el.style.transition='transform 5.2s cubic-bezier(.1,.62,.08,1)'; el.style.transform='rotate('+WH.rot+'deg)';
+  let t=0,gap=45; const tick=()=>{ if(!WH.spinning) return; Snd.sfx('tick'); gap*=1.075; t+=gap; if(t<5000) setTimeout(tick,gap); }; tick();
+  setTimeout(()=>{
+    WH.spinning=false; const k=KEYS[target]; WH.seen.add(k); WH.order.push(k); WH.sel=k;
+    wheelUI(k); showInfo(k);
+    if(WH.seen.size>=KEYS.length&&!fwShown){ fwShown=true; setTimeout(()=>FW.start(3000),500); }
+    $('#cards').scrollIntoView({block:'nearest',behavior:'smooth'});
+  },5400);
+}
+$('#btn-spin').addEventListener('click',spin);
+$('#cards').addEventListener('click',e=>{ const b=e.target.closest('.mc[data-k]'); if(b&&!WH.spinning){ Snd.sfx('click'); showInfo(b.dataset.k,true); $('#wi').scrollIntoView({block:'nearest',behavior:'smooth'}); } });
+buildWheel(); renderCards();
+
+/* ================= trò chơi: 10 thử thách, sai 1 câu là thất bại ================= */
+const TOTAL=10;
+function newGame(){
+  G.order=shuffle(KEYS).slice(0,TOTAL); G.i=0; G.score=0; G.over=false;
+  document.body.classList.remove('sad');
+  renderRound(); show('round');
+}
+function renderRound(){
+  const key=G.order[G.i]; G.key=key; G.solved=false;
+  $('#rd-count').textContent='Thử thách '+(G.i+1)+'/'+TOTAL;
+  $('#rd-dots').innerHTML=Array.from({length:TOTAL},(_,i)=>`<i class="${i<G.i?'d-done':i===G.i?'d-now':''}"></i>`).join('');
+  $('#rd-score').textContent='★ '+G.score;
+  $('#job-name').textContent=OUTFITS[key].job;
+  setFigure(null,'idle');
+  setMsg('','Chọn trang phục phù hợp','Cẩn thận! Chỉ cần sai một câu là thế giới sẽ lâm nguy.');
+  const opts=shuffle([key].concat(shuffle(KEYS.filter(k=>k!==key)).slice(0,5)));
+  $('#opts').innerHTML=opts.map((k,n)=>`<button class="card" data-k="${k}" aria-label="Trang phục số ${n+1}">${charSVG(k,'idle')}</button>`).join('');
+  $('#btn-next').hidden=true;
+  $('#s-round').scrollTop=0;
+}
+function choose(btn){
+  if(G.solved||G.over||btn.disabled) return;
+  const k=btn.dataset.k;
+  document.querySelectorAll('#opts .card').forEach(c=>{ c.disabled=true; });
+  if(k===G.key){
+    G.solved=true; G.score++;
+    btn.classList.add('right');
+    setFigure(k,'happy',true); sparkle();
+    setMsg('ok','Bạn thật là thông minh',OUTFITS[k].fact);
+    $('#rd-score').textContent='★ '+G.score;
+    $('#rd-dots').children[G.i].className='d-now d-done';
+    Snd.sfx('good');
+    const nx=$('#btn-next'); nx.textContent=G.i<TOTAL-1?'Thử thách tiếp theo':'Hoàn thành'; nx.hidden=false;
+    setTimeout(()=>nx.scrollIntoView({block:'nearest',behavior:'smooth'}),200);
+  }else{
+    G.over=true; btn.classList.add('wrong');
+    setFigure(k,'cry');
+    setMsg('bad','Bạn mặc sai rồi T.T','Đây là trang phục của nghề '+OUTFITS[k].job.toLowerCase()+'.');
+    Snd.sfx('bad');
+    setTimeout(failGame,1500);
+  }
+}
+function nextRound(){
+  Snd.sfx('click');
+  if(G.i<TOTAL-1){ G.i++; renderRound(); } else winGame();
+}
+function winGame(){
+  chestUnlocked=true; Snd.sfx('win');
+  Sys.open([{t:'Cảm ơn người được chọn, cậu chính là anh hùng của thế giới này.'}],{onDone:()=>show('title')});
+}
+function failGame(){
+  const fx=$('#fx'),app=$('#app');
+  fx.hidden=false; fx.className='fx'; void fx.offsetWidth; Snd.sfx('whoosh');
+  setTimeout(()=>{ fx.classList.add('hit'); app.classList.add('quake'); Snd.sfx('boom'); },1150);
+  setTimeout(()=>app.classList.remove('quake'),2300);
+  setTimeout(()=>{
+    fx.hidden=true; fx.className='fx'; document.body.classList.add('sad');
+    Sys.open([{t:'Rất tiếc bạn đã thất bại trong việc giải cứu thế giới.'}],{sad:true,btn:'Quay lại chơi tiếp',onDone:()=>newGame()});
+  },3000);
+}
+
+/* ================= sự kiện ================= */
+$('#opts').addEventListener('click',e=>{ const b=e.target.closest('.card'); if(b) choose(b); });
+$('#btn-next').addEventListener('click',nextRound);
+$('#btn-home').addEventListener('click',()=>{ Snd.sfx('click'); show('title'); });
+$('#btn-start').addEventListener('click',()=>{
+  Snd.resume(); Snd.sfx('click'); Snd.stopMusic(.8);
+  show('loading'); runLoading(()=>newGame());
+});
+$('#snd').addEventListener('click',()=>{
+  const on=Snd.toggle(); $('#snd').textContent=on?'🔊':'🔇'; updateHint();
+});
+/* trình duyệt chặn tự phát âm thanh: bật ngay ở lần chạm đầu tiên */
+const unlock=()=>{
+  Snd.resume();
+  if(screenNow==='title'&&Snd.on&&!introActive) Snd.startMusic();
+  setTimeout(updateHint,150);
+  if(Snd.running()){ ['pointerdown','keydown','touchstart','touchend','click'].forEach(ev=>document.removeEventListener(ev,unlock)); }
+};
+['pointerdown','keydown','touchstart','touchend','click'].forEach(ev=>document.addEventListener(ev,unlock,{passive:true}));
+document.addEventListener('visibilitychange',()=>{
+  if(!Snd.ctx) return;
+  if(document.hidden){ try{ Snd.ctx.suspend(); }catch(e){} } else if(Snd.on){ Snd.resume(); }
+});
+
+try{ Snd.init(); }catch(e){}
+show('title');
+startIntro();
+</script>
+</body>
+</html>
